@@ -1,0 +1,23 @@
+.re-title {
+	height:40px;
+	white-space: nowrap;
+	padding-left: 20px;
+}
+.re-form{
+	padding: 15px 30px;
+}
+.re-form1{
+	padding: 0px 0px 10px 30px;
+}
+.re-formp{
+	padding-top: 25px;
+}
+.re-layui-form-label{position: relative; float: left; display: block;  padding: 9px 15px;  width: 100px; font-weight: 400; line-height: 20px; text-align: right;}
+.re-center{
+	text-align: center;
+}
+.choose-img{
+	width:50px;
+	height:50px;
+	margin: 10px;
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.ProductBounsMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.ProductBouns">
+        <id column="id"  property="id" />
+        <result column="time"  property="time" />
+        <result column="type"  property="type" />
+        <result column="pid"  property="pid"/>
+        <result column="amount"  property="amount" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, time, type, amount, pid
+    </sql>
+
+    <select id="selProductBounsById" parameterType="java.lang.Integer" resultType="com.chainfuture.code.bean.ProductBouns">
+        SELECT <include refid="Base_Column_List"/>
+        FROM code_product_bouns
+        WHERE id=#{id}
+    </select>
+    <!-- 插入一条记录 -->
+    <insert id="insertProductBouns" parameterType="com.chainfuture.code.bean.ProductBouns">
+        INSERT INTO
+        code_product_bouns (time, type, amount, pid)
+        VALUES
+        (#{time},#{type}, #{amount},#{pid})
+    </insert>
+    <!-- 修改信息 -->
+    <update id="updateProductBouns" parameterType="com.chainfuture.code.bean.ProductBouns">
+        UPDATE code_product_bouns
+        <trim prefix="set" suffixOverrides=",">
+            <if test="time != null and time != ''">
+                time=#{time},
+            </if>
+            <if test="type != null">
+                type=#{type},
+            </if>
+            <if test="amount != null">
+                amount=#{amount},
+            </if>
+            <if test="pid != null">
+                pid=#{pid},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.NewsMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.News">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="content" property="content" />
+        <result column="summary" property="summary" />
+        <result column="tokenTotal" property="tokenTotal" />
+        <result column="tokenSurplus" property="tokenSurplus" />
+        <result column="createTime" property="tokenSurplus" />
+        <result column="parentPromot" property="parentPromot" />
+        <result column="promot" property="promot" />
+        <result column="publisher" property="publisher" />
+        <result column="status" property="status"/>
+        <result column="readAmount" property="readAmount"/>
+        <result column="amount" property="amount"/>
+        <result column="assetName" property="assetName"/>
+        <result column="address" property="address"/>
+        <result column="needPush" property="needPush"/>
+        <result column="summaryImg" property="summaryImg"/>
+        <result column="newsId" property="newsId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, `title`, content, summary, tokenTotal, tokenSurplus, createTime, parentPromot, promot, publisher, `status``, readAmount, amount, assetName,address,needPush,summaryImg,newsId
+    </sql>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.chainfuture.code.bean.News">
+        SELECT
+        id, `title`, content,summary, tokenTotal, tokenSurplus, createTime, parentPromot, promot, publisher, `status`, readAmount,amount, assetName,address,needPush,summaryImg,newsId
+        FROM code_news  where id=#{id}
+    </select>
+
+    <delete id="delNews" parameterType="int">
+        DELETE from code_news  where  id = #{id}
+    </delete>
+    <!-- 查询所有记录 -->
+    <select id="listNews" resultType="com.chainfuture.code.bean.News">
+        SELECT
+        id, `title`, content,summary, tokenTotal, tokenSurplus, createTime, parentPromot, promot, publisher, `status`, readAmount, amount, assetName,address,needPush,summaryImg,newsId
+        FROM code_news ORDER  by  id   desc
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+
+    <!-- 查询资讯记录数 -->
+    <select id="queryCount" parameterType="com.chainfuture.code.bean.News" resultType="int">
+        SELECT count(id) FROM code_news
+    </select>
+    <!-- 增加奖励数量 -->
+    <update id="saveAddToken" parameterType="com.chainfuture.code.bean.News">
+        UPDATE code_news
+        SET
+        tokenTotal = #{tokenTotal},tokenSurplus = #{tokenSurplus}
+        WHERE id = #{id}
+    </update>
+    <!-- 禁用资讯 -->
+    <update id="banNews" parameterType="java.util.Map">
+        UPDATE code_news
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 插入一条勋章记录 -->
+    <insert id="insertNews" parameterType="com.chainfuture.code.bean.News">
+        INSERT INTO
+        code_news (title, content, summary, tokenTotal, createTime,tokenSurplus,  parentPromot, promot, publisher, `status`, readAmount, assetName, amount, address,needPush,summaryImg,newsId)
+        VALUES
+        (#{title}, #{content}, #{summary}, #{tokenTotal}, #{createTime}, #{tokenTotal}, #{parentPromot}, #{promot}, #{publisher}, #{status}, #{readAmount}, #{assetName}, #{amount}, #{address},#{needPush},#{summaryImg},#{newsId})
+    </insert>
+
+    <!-- 修改news信息 -->
+    <update id="updateNews" parameterType="com.chainfuture.code.bean.News">
+        UPDATE code_news
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title != null and title != ''">
+                `title` = #{title},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="createTime != null and createTime != ''">
+                createTime = #{createTime},
+            </if>
+            <if test="summary != null and summary != ''">
+                summary = #{summary},
+            </if>
+            <if test="tokenTotal != null and tokenTotal != '' and tokenTotal!=0">
+                tokenTotal = #{tokenTotal},
+            </if>
+            <if test="parentPromot != null">
+                parentPromot = #{parentPromot},
+            </if>
+            <if test="promot != null">
+                promot = #{promot},
+            </if>
+            <if test="publisher != null">
+                publisher = #{publisher},
+            </if>
+            <if test="readAmount != null and readAmount!='' and readAmount!=0">
+                readAmount = #{readAmount},
+            </if>
+            <if test="assetName != null">
+                assetName = #{assetName},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="needPush!=null">
+                needPush = #{needPush},
+            </if>
+            <if test="summaryImg!=null">
+                summaryImg = #{summaryImg},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.CustStrategyInfoMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.CustStrategyInfo">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="stratename" property="stratename" />
+        <result column="stratemem" property="stratemem" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, stratename,stratemem
+    </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true"  parameterType="com.chainfuture.code.bean.CustStrategyInfo">
+        insert into cust_strategy_info (id, stratename, stratemem
+        )
+        values (#{id,jdbcType=INTEGER}, #{stratename,jdbcType=VARCHAR}, #{stratemem,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <select id="selectStrateList1" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from cust_strategy_info
+        where stratemem = #{roleInfo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectStrateList" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from cust_strategy_info
+        where stratemem = #{roleInfo,jdbcType=VARCHAR}
+    </select>
+</mapper>

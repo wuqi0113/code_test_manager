@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+ 		 http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://mybatis.org/schema/mybatis-spring
+        http://mybatis.org/schema/mybatis-spring.xsd
+        http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring
+        http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.2.xsd">
+
+    <!-- 采用注释的方式配置bean -->
+    <context:annotation-config />
+    <bean id="BackApiFilter" class="com.chainfuture.code.filter.BackApiFilter"></bean>
+    <!-- 配置自定扫描的包 -->
+    <context:component-scan base-package="com.chainfuture.code" use-default-filters="false">
+        <!-- 指定包含 @Service注解的类加入springIOC容器-->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <!-- 指定包含 @Repository注解的类加入springIOC容器-->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+        <!-- 指定包含 @Component注解的类加入springIOC容器-->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+    </context:component-scan>
+
+    <!-- 读入配置属性文件 -->
+    <context:property-placeholder location="classpath:db.properties" ignore-unresolvable="true"/>
+
+    <!-- proxy-target-class默认"false",更改为"ture"使用CGLib动态代理 -->
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="clone">
+        <!-- 基本属性driverClassName、 url、user、password -->
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="initialSize" value="2" />
+        <property name="minIdle" value="2" />
+        <property name="maxActive" value="10" />
+        <property name="maxWait" value="60000" />
+        <property name="timeBetweenEvictionRunsMillis" value="3600000" />
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+        <property name="validationQuery" value="${jdbc.pool.validationQuery}" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <property name="poolPreparedStatements" value="true" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+        <property name="filters" value="config" />
+        <property name="connectionInitSqls">
+            <list>
+                <value>set names utf8mb4</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 配置sqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
+        <property name="mapperLocations" value="classpath:mybatis/mapper/*.xml" />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+        <property name="locations"  value="classpath:spring/redis.properties"></property>
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+    </bean>
+    <!-- redis -->
+   <!-- <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}"></property>
+        <property name="minEvictableIdleTimeMillis" value="${redis.minEvictableIdleTimeMillis}"></property>
+        <property name="numTestsPerEvictionRun" value="${redis.numTestsPerEvictionRun}"></property>
+        <property name="timeBetweenEvictionRunsMillis" value="${redis.timeBetweenEvictionRunsMillis}"></property>
+    </bean>
+    <bean id="jeditConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" destroy-method="destroy">
+        <property name="poolConfig" ref="jedisPoolConfig"></property>
+        <property name="hostName" value="${redis.hostName}"></property>
+        <property name="port" value="${redis.port}"></property>
+        <property name="timeout" value="${redis.timeout}"></property>
+        <property name="usePool" value="${redis.usePool}"></property>
+    </bean>-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.pool.maxIdle}" />
+        <property name="maxTotal" value="${redis.pool.maxTotal}" />
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}" />
+        <property name="testOnBorrow" value="${redis.pool.testOnBorrow}" />
+        <property name="testOnReturn" value="${redis.pool.testOnReturn}" />
+    </bean>
+
+    <bean id="jeditConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" destroy-method="destroy">
+        <property name="poolConfig" ref="jedisPoolConfig"></property>
+        <property name="hostName" value="${redis.hostName}"></property>
+        <property name="port" value="${redis.port}"></property>
+        <property name="timeout" value="${redis.timeout}"></property>
+        <property name="usePool" value="${redis.usePool}"></property>
+    </bean>
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+        <property name="connectionFactory"   ref="jeditConnectionFactory" />
+    </bean>
+    <bean id="stringSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"/>
+    <!-- 定义RedisTemplate  并开启redis事务，可以通过transcational注解控制 -->
+    <!-- <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="jeditConnectionFactory" />
+        <property name="keySerializer" ref="stringSerializer" />
+        <property name="enableTransactionSupport" value="true" />
+    </bean> -->
+    <!-- end redis -->
+
+    <!-- begin ehcache 缓存 -->
+    <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:spring/ehcache.xml" />
+    </bean>
+    <ehcache:annotation-driven cache-manager="ehCacheManager" />
+    <!-- end ehcache -->
+
+    <!-- 配置mapperScannerConfigurer -->
+    <!--<mybatis:scan  base-package="com.chainfuture.dcon.coin.mapper"  />-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.chainfuture.code.mapper" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+    </bean>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 通知 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!-- 传播行为 -->
+            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="insert*" propagation="REQUIRED" />
+            <tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="create*" propagation="REQUIRED" />
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+            <tx:method name="select*" propagation="SUPPORTS" read-only="true" />
+            <tx:method name="get*" propagation="SUPPORTS" read-only="true" />
+        </tx:attributes>
+    </tx:advice>
+    <!-- aop -->
+    <!--<aop:config>
+        <aop:advisor advice-ref="txAdvice"
+                     pointcut="execution(* com.chainfuture.code.service.impl.*.*(..))"/>
+    </aop:config>-->
+
+
+    <!-- 注解事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!-- 国际化 -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="fallbackToSystemLocale" value="false" />
+        <property name="useCodeAsDefaultMessage" value="true" />
+        <property name="defaultEncoding" value="UTF-8" />
+        <property name="cacheSeconds" value="60" />
+        <!--<property name="basenames" value="message.message">
+            &lt;!&ndash;<list>&ndash;&gt;
+                &lt;!&ndash;<value>classpath:/message/message_en</value>&ndash;&gt;
+                &lt;!&ndash;<value>classpath:/message/message_zh_CN</value>&ndash;&gt71e54bd98cc4b85d9e8746d320cc920d;
+            &lt;!&ndash;</list>&ndash;&gt;
+        </property>-->
+    </bean>
+
+</beans>

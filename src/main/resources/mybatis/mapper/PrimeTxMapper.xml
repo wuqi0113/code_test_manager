@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.PrimeTxMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.PrimeTxExample">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="fromAddress" column="fromAddress"/>
+        <result property="toTxData" column="toTxData"/>
+        <result property="toAddress" column="toAddress"/>
+        <result property="busiJson" column="busiJson"/>
+        <result property="amount" column="amount"/>
+        <result property="productId" column="productId"/>
+        <result property="workId" column="workId"/>
+        <result property="createTime" column="createTime"/>
+        <result property="payStatus" column="payStatus"/>
+        <result property="busiTxId" column="busiTxId"/>
+        <result property="platformTxId" column="platformTxId"/>
+        <result property="primeAddress" column="primeAddress"/>
+        <result property="errorMsg" column="errorMsg"/>
+        <result property="codeInfo" column="codeInfo"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, fromAddress, toTxData, toAddress, busiJson, amount, productId, workId, createTime,  payStatus, busiTxId, platformTxId, primeAddress,errorMsg,codeInfo
+    </sql>
+
+    <select id="selPrimeTxByPerson" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT cpt.busiTxId,cpt.createTime,cpt.busiJson,wu.nickname,wu.phone,wu.headimgurl headImg,cp.proName,cp.sname,cp.proAddress,cpt.codeInfo
+        FROM code_prime_tx  cpt  LEFT JOIN  wechat_user wu  ON  cpt.toAddress = wu.address LEFT JOIN code_product  cp ON  cpt.fromAddress=cp.proAddress
+        WHERE  productId&lt;=0  AND  payStatus=1
+        <if test="address != null and address !='' ">
+            AND address = #{address}
+        </if>
+        <if test="type != null">
+            AND `type` = #{type}
+        </if>
+    </select>
+
+    <select id="selPrimeTxByFromAndToAddr" parameterType="com.chainfuture.code.bean.PrimeTxExample" resultType="com.chainfuture.code.bean.PrimeTxExample">
+        SELECT <include refid="Base_Column_List"/>
+        FROM  code_prime_tx
+        WHERE  1=1
+        <if test="fromAddress != null and fromAddress !='' ">
+            AND fromAddress = #{fromAddress}
+        </if>
+        <if test="toAddress != null and toAddress !='' ">
+            AND toAddress = #{toAddress}
+        </if>
+    </select>
+
+    <insert id="addPrimeTx" keyProperty="id" useGeneratedKeys="true" parameterType="com.chainfuture.code.bean.PrimeTxExample">
+        INSERT INTO  code_prime_tx  (fromAddress, toTxData, toAddress, busiJson, amount, productId, workId, createTime, payStatus, busiTxId, platformTxId, primeAddress,errorMsg,codeInfo)
+        VALUES (#{fromAddress},#{toTxData},#{toAddress},#{busiJson},#{amount},#{productId},#{workId},#{createTime},#{payStatus},#{busiTxId},#{platformTxId},#{primeAddress},#{errorMsg},#{codeInfo})
+    </insert>
+</mapper>

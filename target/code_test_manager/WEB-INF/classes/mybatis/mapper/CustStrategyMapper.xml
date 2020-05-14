@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.CustStrategyMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.CustStrategy">
+        <id column="id"  property="id" />
+        <result column="roles" property="roles" />
+        <result column="idents" property="idents" />
+        <result column="strateid" property="strateid" />
+
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, roles,idents,strateid
+    </sql>
+
+    <insert id="insert" parameterType="com.chainfuture.code.bean.CustStrategy">
+        insert into cust_strategy ( id,roles,idents,strateid)
+        values (#{id,jdbcType=INTEGER},#{roles,jdbcType=VARCHAR}, #{idents,jdbcType=VARCHAR},#{strateid,jdbcType=INTEGER})
+    </insert>
+
+
+
+    <select id="selectStrateAll" parameterType="java.lang.Integer" resultType="java.util.Map">
+         select  cf.sname,cs.roles,cs.idents,cs.strateid,cf.name,cf.stype,cf.unit,cf.issingle,cf.lengthes,cf.parentid,cf.id
+   from  cust_strategy  cs  left  join  cust_fileds  cf  on
+   cs.idents = cf.sname
+    where  cs.strateid=#{id,jdbcType=INTEGER}  GROUP  by  cs.id
+    </select>
+
+    <select id="selFiled" parameterType="java.lang.Integer" resultType="java.util.Map">
+        select  cf.sname,cf.name,cf.lengthes,cf.stype,cf.isverifiy
+        from  cust_strategy  cs  left  join  cust_fileds  cf  on
+        cs.idents = cf.sname
+        where  cs.strateid=#{id,jdbcType=INTEGER}
+    </select>
+</mapper>

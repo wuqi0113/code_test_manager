@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.AuthProductMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.Product">
+        <id column="id"  property="id" />
+        <result column="proName"  property="proName" />
+        <result column="proAddress"  property="proAddress" />
+        <result column="sname"  property="sname"/>
+        <result column="proDescribe"  property="proDescribe" />
+        <result column="reward"  property="reward" />
+        <result column="proDisplay"  property="proDisplay" />
+        <result column="medalId"  property="medalId" />
+        <result column="rewardWhere"  property="rewardWhere" />
+        <result column="createTime"  property="createTime" />
+        <result column="status"  property="status" />
+        <result column="proNum"  property="proNum" />
+        <result column="producer"  property="producer" />
+        <result column="updateTime"  property="updateTime" />
+        <result column="primeAddr"  property="primeAddr"/>
+        <result column="assetId"  property="assetId"/>
+        <result column="proAdvertImg"  property="proAdvertImg"/>
+        <result column="extraInfo"  property="extraInfo"/>
+        <result column="productLicense"  property="productLicense"/>
+        <result column="productSize"  property="productSize"/>
+        <result column="qualityPeriod"  property="qualityPeriod"/>
+        <result column="classify"  property="classify"/>
+        <result column="proThumbnail"  property="proThumbnail"/>
+        <result column="orderId"  property="orderId"/>
+        <result column="type"  property="type"/>
+        <result column="activityCodeType"  property="activityCodeType"/>
+        <result column="isGroup"  property="isGroup"/>
+        <result column="productPeriod"  property="productPeriod"/>
+        <result column="bouns"  property="bouns"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, proName, sname, proDisplay, proAddress, proDescribe, reward, medalId, rewardWhere, createTime,`status`, proNum, producer, updateTime, primeAddr, assetId, proAdvertImg, extraInfo,productLicense,productSize,qualityPeriod,classify,proThumbnail, orderId, `type`,activityCodeType,isGroup,productPeriod,bouns
+    </sql>
+
+    <select id="selProTotalAmount" resultType="java.util.Map">
+        SELECT SUM(proNum*reward) totalAmount
+        FROM  code_product
+        WHERE `type` = 1
+    </select>
+
+    <select id="getProductByAddress" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.ProductExample">
+        SELECT <include refid="Base_Column_List"/>
+        FROM code_product  WHERE proAddress = #{proAddress} AND  proAddress IS NOT NULL
+    </select>
+
+    <select id="selectMaxOrder" resultType="java.util.Map">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM  code_product  ORDER BY  orderId  DESC  LIMIT  0,1
+    </select>
+    <update id="updateCancleOrder" parameterType="java.util.Map">
+        UPDATE code_product  SET orderId = #{orderId} WHERE id = #{id}
+    </update>
+    
+    <select id="selVipProductList" resultType="com.chainfuture.code.bean.ProductExample">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM  code_product  WHERE  `type`=#{type} AND  proAddress IS NOT NULL  AND `status` = 1
+        ORDER BY   orderId desc, createTime DESC
+    </select>
+
+    <insert id="addProduct" parameterType="com.chainfuture.code.bean.ProductExample" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        code_product (bouns，productPeriod,isGroup,activityCodeType,`type`,proThumbnail,proName, sname, proDisplay, proAddress, proDescribe, reward, medalId, rewardWhere, createTime,`status`, proNum, producer, updateTime, primeAddr, assetId, proAdvertImg, extraInfo,productLicense,productSize,qualityPeriod,classify,orderId)
+        VALUES
+        (#{bouns},#{productPeriod},#{isGroup},#{activityCodeType},#{type},#{proThumbnail},#{proName}, #{sname}, #{proDisplay}, #{proAddress}, #{proDescribe}, #{reward}, #{medalId}, #{rewardWhere}, #{createTime},#{status}, #{proNum}, #{producer}, #{updateTime}, #{primeAddr}, #{assetId},#{proAdvertImg},#{extraInfo},#{productLicense},#{productSize},#{qualityPeriod},#{classify},#{orderId})
+    </insert>
+    <!-- 修改信息 -->
+    <update id="updateProduct" parameterType="com.chainfuture.code.bean.ProductExample">
+        UPDATE code_product
+        <trim prefix="set" suffixOverrides=",">
+            <if test="bouns != null">
+                bouns= #{bouns},
+            </if>
+            <if test="productPeriod != null">
+                productPeriod= #{productPeriod},
+            </if>
+            <if test="type != null">
+                type= #{type},
+            </if>
+            <if test="isGroup != null">
+                isGroup= #{isGroup},
+            </if>
+            <if test="activityCodeType != null">
+                activityCodeType= #{activityCodeType},
+            </if>
+            <if test="proName != null and proName != ''">
+                proName= #{proName},
+            </if>
+            <if test="proAddress != null">
+                proAddress=#{proAddress},
+            </if>
+            <if test="proDisplay != null">
+                proDisplay=#{proDisplay},
+            </if>
+            <if test="proDescribe != null">
+                proDescribe=#{proDescribe},
+            </if>
+            <if test="reward != null and reward !=0 and reward !=1 ">
+                reward = #{reward},
+            </if>
+            <if test="medalId != null">
+                medalId = #{medalId},
+            </if>
+            <if test="rewardWhere != null">
+                rewardWhere = #{rewardWhere},
+            </if>
+            <if test="createTime != null and createTime != ''">
+                createTime = #{createTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="proNum != 0 and proNum!=null and proNum!=''">
+                proNum = #{proNum},
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                updateTime = #{updateTime},
+            </if>
+            <if test="producer != null">
+                producer = #{producer},
+            </if>
+            <if test="proAdvertImg != null and proAdvertImg!=''">
+                proAdvertImg = #{proAdvertImg},
+            </if>
+            <if test="assetId != null">
+                assetId = #{assetId},
+            </if>
+            <if test="extraInfo != null and extraInfo!=''">
+                extraInfo = #{extraInfo},
+            </if>
+            <if test="productLicense != null and productLicense!=''">
+                productLicense = #{productLicense},
+            </if>
+            <if test="productSize != null and productSize!=''">
+                productSize = #{productSize},
+            </if>
+            <if test="qualityPeriod != null and qualityPeriod!=''">
+                qualityPeriod = #{qualityPeriod},
+            </if>
+            <if test="classify != null and classify!=''">
+                classify = #{classify},
+            </if>
+            <if test="proThumbnail != null and proThumbnail!=''">
+                proThumbnail = #{proThumbnail}
+            </if>
+            <if test="orderId != null">
+                orderId = #{orderId}
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+
+
+    <select id="getBatchCount" resultType="java.lang.Integer">
+        select count(id)  from code_product  where    sname like  CONCAT(#{sname},'--%')
+    </select>
+
+    <select id="getBatchList" resultType="com.chainfuture.code.bean.Product">
+        SELECT
+        p.*,t.verfiyNum from code_product p left join  (select count(1) verfiyNum, productAddress from codetx where  LENGTH(singleProductID)>5 group by productAddress) t  on  p.proAddress=t.productAddress
+        where    sname like  CONCAT(#{sname},'--%')
+        order by p.id desc
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+
+    <select id="selBySname" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.ProductExample">
+        SELECT  <include refid="Base_Column_List"/>
+        from  code_product  where sname = #{sname}
+    </select>
+
+    <select id="getProductById" parameterType="int" resultType="com.chainfuture.code.bean.ProductExample">
+        SELECT  <include refid="Base_Column_List"/>
+        from  code_product  where  id = #{id}
+    </select>
+    <select id="selProductById" parameterType="int" resultType="com.chainfuture.code.bean.Product">
+        SELECT  <include refid="Base_Column_List"/>
+        from  code_product  where  id = #{id}
+    </select>
+
+    <select id="getProductCount" resultType="int" >
+        SELECT  count(1)
+        from  code_product  where   sname not like '%--%'
+    </select>
+    <select id="selProductList" resultType="com.chainfuture.code.bean.Product">
+        SELECT  <include refid="Base_Column_List"/>
+        from  code_product  where   sname not like '%--%'
+        order by id desc
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+
+    <insert id="saveProduct" parameterType="com.chainfuture.code.bean.Product" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO
+        code_product (bouns,productPeriod,proThumbnail,proName, sname, proDisplay, proAddress, proDescribe, reward, medalId, rewardWhere, createTime,`status`, proNum, producer, updateTime, primeAddr, assetId, proAdvertImg, extraInfo,productLicense,productSize,qualityPeriod,classify,orderId)
+        VALUES
+        (#{bouns},#{productPeriod},#{proThumbnail},#{proName}, #{sname}, #{proDisplay}, #{proAddress}, #{proDescribe}, #{reward}, #{medalId}, #{rewardWhere}, #{createTime},#{status}, #{proNum}, #{producer}, #{updateTime}, #{primeAddr}, #{assetId},#{proAdvertImg},#{extraInfo},#{productLicense},#{productSize},#{qualityPeriod},#{classify},#{orderId})
+    </insert>
+    <!-- 修改信息 -->
+    <update id="upProduct" parameterType="com.chainfuture.code.bean.Product">
+        UPDATE code_product
+        <trim prefix="set" suffixOverrides=",">
+            <if test="proName != null and proName != ''">
+                proName= #{proName},
+            </if>
+            <if test="proAddress != null">
+                proAddress=#{proAddress},
+            </if>
+            <if test="bouns != null">
+                bouns=#{bouns},
+            </if>
+            <if test="productPeriod != null">
+                productPeriod=#{productPeriod},
+            </if>
+            <if test="proDisplay != null">
+                proDisplay=#{proDisplay},
+            </if>
+            <if test="proDescribe != null">
+                proDescribe=#{proDescribe},
+            </if>
+            <if test="reward != null and reward !=0 and reward !=1 ">
+                reward = #{reward},
+            </if>
+            <if test="medalId != null">
+                medalId = #{medalId},
+            </if>
+            <if test="rewardWhere != null">
+                rewardWhere = #{rewardWhere},
+            </if>
+            <if test="createTime != null and createTime != ''">
+                createTime = #{createTime},
+            </if>
+            <if test="status != null and status != ''">
+                `status` = #{status},
+            </if>
+            <if test="proNum != 0 and proNum!=null and proNum!=''">
+                proNum = #{proNum},
+            </if>
+            <if test="updateTime != null and updateTime != ''">
+                updateTime = #{updateTime},
+            </if>
+            <if test="producer != null">
+                producer = #{producer},
+            </if>
+            <if test="proAdvertImg != null and proAdvertImg!=''">
+                proAdvertImg = #{proAdvertImg},
+            </if>
+            <if test="assetId != null">
+                assetId = #{assetId},
+            </if>
+            <if test="extraInfo != null and extraInfo!=''">
+                extraInfo = #{extraInfo},
+            </if>
+            <if test="productLicense != null and productLicense!=''">
+                productLicense = #{productLicense},
+            </if>
+            <if test="productSize != null and productSize!=''">
+                productSize = #{productSize},
+            </if>
+            <if test="qualityPeriod != null and qualityPeriod!=''">
+                qualityPeriod = #{qualityPeriod},
+            </if>
+            <if test="classify != null and classify!=''">
+                classify = #{classify},
+            </if>
+            <if test="proThumbnail != null and proThumbnail!=''">
+                proThumbnail = #{proThumbnail}
+            </if>
+            <if test="orderId != null">
+                orderId = #{orderId}
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+</mapper>

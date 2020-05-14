@@ -1,0 +1,133 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="WebApp_ID" version="3.0">
+  <display-name>code_inu_manager</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <!-- 配置spring -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring/spring-context.xml</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!-- 配置springmvc -->
+  <servlet>
+    <servlet-name>springmvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring/springmvc-code.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>springmvc</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+  <!-- 转码过滤器 -->
+  <filter>
+    <filter-name>characterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>characterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>SessionFilter</filter-name>
+    <filter-class>com.chainfuture.code.filter.LoginFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>SessionFilter</filter-name>
+    <!-- 所有的管理页面需要登录后才能访问 -->
+    <url-pattern>/view/*</url-pattern>
+  </filter-mapping>
+
+
+  <!-- 配置session超时时间，单位分钟 -->
+  <session-config>
+    <session-timeout>15</session-timeout>
+  </session-config>
+
+  <!-- 图片验证码配置开始 -->
+  <servlet>
+    <servlet-name>ImageServlet</servlet-name>
+    <servlet-class> com.chainfuture.code.servlet.ImageServlet</servlet-class>
+    <init-param>
+      <param-name>width</param-name>
+      <param-value>65</param-value>
+    </init-param>
+    <init-param>
+      <param-name>height</param-name>
+      <param-value>23</param-value>
+    </init-param>
+    <init-param>
+      <param-name>codeCount</param-name>
+      <param-value>4</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ImageServlet</servlet-name>
+    <url-pattern>/ImageServlet</url-pattern>
+  </servlet-mapping>
+
+  <!-- OpenAPI接口过滤器 -->
+  <filter>
+    <filter-name>OpenApiFilter</filter-name>
+    <filter-class>com.chainfuture.code.filter.OpenApiFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>OpenApiFilter</filter-name>
+    <url-pattern>/openapi/*</url-pattern>
+  </filter-mapping>
+
+  <!-- BackAPI接口过滤器 -->
+  <filter>
+    <filter-name>BackApiFilter</filter-name>
+    <filter-class>com.chainfuture.code.filter.BackApiFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>BackApiFilter</filter-name>
+    <url-pattern>/backapi/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>DelegatingFilterProxy</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    <init-param>
+      <param-name>targetBeanName</param-name>
+      <param-value>BackApiFilter</param-value>
+    </init-param>
+    <init-param>
+      <param-name>targetFilterLifecycle</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>DelegatingFilterProxy</filter-name>
+    <url-pattern>/backapi/*</url-pattern>
+  </filter-mapping>
+  <!-- PAPI接口过滤器  给海拔提供 -->
+  <filter>
+    <filter-name>PApiFilter</filter-name>
+    <filter-class>com.chainfuture.code.filter.PApiFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>PApiFilter</filter-name>
+    <url-pattern>/papi/*</url-pattern>
+  </filter-mapping>
+
+</web-app>

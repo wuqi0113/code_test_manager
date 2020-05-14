@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.SysModuleMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.SysModule">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="sname" column="sname"/>
+        <result property="moduleName" column="moduleName"/>
+        <result property="address" column="address"/>
+        <result property="workDescribe" column="workDescribe"/>
+        <result property="perms" column="perms"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,sname,moduleName,address,workDescribe,perms
+    </sql>
+    <!-- 查询所有勋章记录 -->
+    <select id="getModuleName" parameterType="com.chainfuture.code.bean.SysModule" resultType="com.chainfuture.code.bean.SysModule">
+        SELECT <include refid="Base_Column_List"/>
+        FROM  sys_module
+        <if test="sname!=null and sname!=''">
+            where   sname = #{sname}
+        </if>
+    </select>
+
+    <select id="selSysModuleByPerms"  resultType="com.chainfuture.code.bean.SysModule">
+        SELECT <include refid="Base_Column_List"/>
+        FROM  sys_module
+        <if test="perms!=null and perms!=''">
+            where   perms = #{perms}
+        </if>
+    </select>
+    <select id="moduleInfo"  resultType="com.chainfuture.code.bean.SysModule">
+        SELECT <include refid="Base_Column_List"/>
+        FROM  sys_module
+        <if test="address!=null and address!=''">
+            where   address = #{address}
+        </if>
+    </select>
+</mapper>

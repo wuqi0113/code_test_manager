@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.FxUserMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.FxUser">
+        <id column="id" property="id" />
+        <result column="userName" property="userName" />
+        <result column="headImage"  property="headImage" />
+        <result column="level" property="level" />
+        <result column="address"  property="address" />
+        <result column="idNum"  property="idNum" />
+        <result column="busiLicense"  property="busiLicense" />
+        <result column="region"  property="region" />
+        <result column="phone"  property="phone" />
+        <result column="status"  property="status" />
+        <result column="inviteCode"  property="inviteCode" />
+        <result column="oneCount"  property="oneCount" />
+        <result column="twoCount"  property="twoCount" />
+        <result column="umbrellaCount"  property="umbrellaCount" />
+        <result column="pid"  property="pid" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,userName,headImage,level,address,idNum,busiLicense,region,phone,status,inviteCode,oneCount,twoCount,umbrellaCount,pid
+    </sql>
+    <select id="selUserByInviteCode" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.FxUser">
+        SELECT <include refid="Base_Column_List"/>
+        FROM fx_user
+        WHERE inviteCode=#{inviteCode}
+    </select>
+    <select id="selUserById" parameterType="java.lang.Integer" resultType="com.chainfuture.code.bean.FxUser">
+        SELECT <include refid="Base_Column_List"/>
+        FROM fx_user
+        WHERE id=#{id}
+    </select>
+    <select id="selUserByAddr" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.FxUser">
+        SELECT <include refid="Base_Column_List"/>
+        FROM fx_user
+        WHERE  address=#{address}
+    </select>
+    <insert id="insertUser" keyProperty="id" useGeneratedKeys="true" parameterType="com.chainfuture.code.bean.FxUser">
+        insert  into  fx_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName !=null">
+                userName,
+            </if>
+            <if test="headImage !=null">
+                headImage,
+            </if>
+            <if test="level!=null">
+                level,
+            </if>
+            <if test="address!=null">
+                address,
+            </if>
+            <if test="idNum !=null">
+                idNum,
+            </if>
+            <if test="busiLicense !=null">
+                busiLicense,
+            </if>
+            <if test="region!=null">
+                region,
+            </if>
+            <if test="phone!=null">
+                phone,
+            </if>
+            <if test="status !=null">
+                status,
+            </if>
+            <if test="inviteCode !=null">
+                inviteCode,
+            </if>
+            <if test="oneCount!=null">
+                oneCount,
+            </if>
+            <if test="twoCount!=null">
+                twoCount,
+            </if>
+            <if test="umbrellaCount !=null">
+                umbrellaCount,
+            </if>
+            <if test="pid !=null">
+                pid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName!=null">
+                #{userName},
+            </if>
+            <if test="headImage!=null">
+                #{headImage},
+            </if>
+            <if test="level!=null">
+                #{level},
+            </if>
+            <if test="address!=null">
+                #{address},
+            </if>
+            <if test="idNum!=null">
+                #{idNum},
+            </if>
+            <if test="busiLicense!=null">
+                #{busiLicense},
+            </if>
+            <if test="region!=null">
+                #{region},
+            </if>
+            <if test="inviteCode!=null">
+                #{inviteCode},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+            <if test="phone!=null">
+                #{phone},
+            </if>
+            <if test="oneCount!=null">
+                #{oneCount},
+            </if>
+            <if test="twoCount!=null">
+                #{twoCount},
+            </if>
+            <if test="umbrellaCount !=null">
+                #{umbrellaCount},
+            </if>
+            <if test="pid !=null">
+               #{pid},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateUser" parameterType="com.chainfuture.code.bean.FxUser" keyProperty="id" useGeneratedKeys="true">
+        UPDATE fx_user
+        <trim prefix="set"  suffixOverrides=",">
+            <if test="userName!=null">
+                userName=#{userName},
+            </if>
+            <if test="headImage!=null">
+                headImage=#{headImage},
+            </if>
+            <if test="level!=null">
+                level=#{level},
+            </if>
+            <if test="address!=null">
+                address=#{address},
+            </if>
+            <if test="idNum!=null">
+                idNum= #{idNum},
+            </if>
+            <if test="busiLicense!=null">
+                busiLicense= #{busiLicense},
+            </if>
+            <if test="region!=null">
+                region=#{region},
+            </if>
+            <if test="inviteCode!=null">
+                inviteCode=#{inviteCode},
+            </if>
+            <if test="status!=null">
+                status= #{status},
+            </if>
+            <if test="phone!=null">
+                phone #{phone},
+            </if>
+            <if test="oneCount!=null">
+                oneCount= #{oneCount},
+            </if>
+            <if test="twoCount!=null">
+                twoCount=#{twoCount},
+            </if>
+            <if test="umbrellaCount !=null">
+                umbrellaCount=#{umbrellaCount},
+            </if>
+            <if test="pid !=null">
+                pid=#{pid},
+            </if>
+        </trim>
+        WHERE   id=#{id}
+    </update>
+</mapper>

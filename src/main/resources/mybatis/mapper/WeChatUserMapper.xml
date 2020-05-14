@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.WeChatUserMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.WeChatUser">
+        <id column="id" property="id" />
+        <result column="nickname" property="nickname" />
+        <result column="openid"  property="openid" />
+        <result column="language" property="language" />
+        <result column="sex"  property="sex" />
+        <result column="province"  property="province" />
+        <result column="city"  property="city" />
+        <result column="country"  property="country" />
+        <result column="headimgurl"  property="headimgurl" />
+        <result column="unionid"  property="unionid" />
+        <result column="phone"  property="phone" />
+        <result column="shareType"  property="shareType" />
+        <result column="preUser"  property="preUser" />
+        <result column="subscribe"  property="subscribe" />
+        <result column="subscribe"  property="subscribe" />
+        <result column="address"  property="address" />
+        <result column="status"  property="status" />
+        <result column="onlyOne"  property="onlyOne" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, nickname, openid, `language`, sex, province, city, country, headimgurl, unionid, phone, shareType, preUser, subscribe,address,`status`,onlyOne
+    </sql>
+
+    <select id="getWeChatAll" resultType="com.chainfuture.code.bean.WeChatUserExample">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM   wechat_user
+    </select>
+
+    <select id="selAdminByAddr" resultType="com.chainfuture.code.bean.WeChatUserExample">
+        select  wu.id, wu.nickname, wu.openid,  wu.headimgurl, wu.unionid, wu.phone,wu.address, sm.name
+         from wechat_user  wu  LEFT JOIN   sys_manage  sm    on  wu.address = sm.address
+         where  wu.address = #{address}  and  sm.status=1
+    </select>
+    <select id="selUserByAddr"  resultType="com.chainfuture.code.bean.WeChatUserExample">
+        select  id, nickname, openid, `language`, sex, province, city, country, headimgurl, unionid, phone, shareType, preUser, subscribe,address,`status`,onlyOne   from wechat_user   where  address = #{address}
+    </select>
+    <!-- 查询所有用户 -->
+    <select id="listWeChatUser"  resultType="java.util.Map">
+        select  distinct w.openid openid,w.nickname nickname,sum(token_number*txType) coinCount,w.headimgurl  from wechat_user  w left join  codetx  ctx  on  w.openid=ctx.`user`  left join  code_product  p  on ctx.productAddress=p.proAddress  where  p.assetId=999999  group  by  ctx.`user` , nickname , headimgurl  order  by  coinCount  desc
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+
+    <!-- 查询记录-->
+    <select id="queryCount" resultType="int">
+        select  count(distinct w.openid) from wechat_user  w left join  codetx  ctx  on  w.openid=ctx.`user`  left join  code_product  p  on ctx.productAddress=p.proAddress  where  p.assetId=999999
+    </select>
+
+    <select id="selectCoin" resultType="int">
+        SELECT SUM(tx.token_number*tx.txType) coinTotal FROM codetx tx left join  code_product  p  on  tx.productAddress=p.proAddress WHERE  p.assetId=999999
+    </select>
+
+    <insert id="insertUser" keyProperty="id" useGeneratedKeys="true" parameterType="com.chainfuture.code.bean.WeChatUserExample">
+        insert  into  wechat_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="nickname !=null">
+                nickname,
+            </if>
+            <if test="openid !=null">
+                openid,
+            </if>
+            <if test="language!=null">
+                `language`,
+            </if>
+            <if test="sex!=null">
+                sex,
+            </if>
+            <if test="province !=null">
+                province,
+            </if>
+            <if test="city !=null">
+                city,
+            </if>
+            <if test="country!=null">
+                country,
+            </if>
+            <if test="headimgurl!=null">
+                headimgurl,
+            </if>
+            <if test="unionid !=null">
+                unionid,
+            </if>
+            <if test="phone !=null">
+                phone,
+            </if>
+            <if test="shareType!=null">
+                shareType,
+            </if>
+            <if test="preUser!=null">
+                preUser,
+            </if>
+            <if test="subscribe !=null">
+                subscribe,
+            </if>
+            <if test="address !=null">
+                address,
+            </if>
+            <if test="status!=null">
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="nickname!=null">
+                #{nickname},
+            </if>
+            <if test="openid!=null">
+                #{openid},
+            </if>
+            <if test="language!=null">
+                #{language},
+            </if>
+            <if test="sex!=null">
+                #{sex},
+            </if>
+            <if test="province!=null">
+                #{province},
+            </if>
+            <if test="city!=null">
+                #{city},
+            </if>
+            <if test="country!=null">
+                #{country},
+            </if>
+            <if test="headimgurl!=null">
+                #{headimgurl},
+            </if>
+            <if test="unionid!=null">
+                #{unionid},
+            </if>
+            <if test="phone!=null">
+                #{phone},
+            </if>
+            <if test="shareType!=null">
+                #{shareType},
+            </if>
+            <if test="preUser!=null">
+                #{preUser},
+            </if>
+            <if test="subscribe!=null">
+                #{subscribe},
+            </if>
+            <if test="address!=null">
+                #{address},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+        </trim>
+
+
+
+
+        /*(nickname, openid, `language`, sex, province, city, country, headimgurl, unionid, phone, shareType, preUser, subscribe,address,`status`)
+        values (#{nickname},#{openid},#{language},#{sex},#{province},#{city},#{country},#{headimgurl},#{unionid},#{phone},#{shareType},#{preUser},#{subscribe},#{address},#{status})*/
+    </insert>
+
+    <update id="updateUser" parameterType="com.chainfuture.code.bean.WeChatUserExample">
+        update  wechat_user
+        <set>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="onlyOne != null">
+                onlyOne = #{onlyOne},
+            </if>
+        </set>
+        where  address = #{address}
+    </update>
+</mapper>

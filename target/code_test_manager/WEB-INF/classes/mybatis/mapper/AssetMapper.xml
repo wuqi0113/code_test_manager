@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.AssetMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.Asset">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="sname" column="sname"/>
+        <result property="name" column="name"/>
+        <result property="name_en" column="name_en"/>
+        <result property="circulation" column="circulation"/>
+        <result property="issueAddress" column="issueAddress"/>
+        <result property="issueTime" column="issueTime"/>
+        <result property="status" column="status"/>
+        <result property="imageUrl" column="imageUrl"/>
+        <result property="produtIntroUrl" column="produtIntroUrl"/>
+        <result property="issueDatum" column="issueDatum"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+    </resultMap>
+    <!-- 查询所有勋章记录 -->
+    <select id="getAssetList" resultType="com.chainfuture.code.bean.Asset">
+        SELECT  sname, `name`, name_en
+        FROM t_asset where `status`=0
+    </select>
+</mapper>

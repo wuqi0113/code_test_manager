@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.FxAwardInfeedMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.FxAwardInfeed">
+        <id column="id" property="id" />
+        <result column="reward" property="reward" />
+        <result column="hcondit" property="hcondit" />
+        <result column="lcondit" property="lcondit" />
+        <result column="preward"  property="preward" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,reward,hcondit,preward,lcondit
+    </sql>
+
+    <select id="selFxAwardInfeed" resultType="com.chainfuture.code.bean.FxAwardInfeed">
+        SELECT <include refid="Base_Column_List"/>
+        FROM  fx_award_infeed
+    </select>
+
+    <insert id="insertFxAwardInfeed" keyProperty="id" useGeneratedKeys="true" parameterType="com.chainfuture.code.bean.FxAwardInfeed">
+        insert  into  fx_award_infeed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="reward !=null">
+                reward,
+            </if>
+            <if test="lcondit !=null">
+                lcondit,
+            </if>
+            <if test="hcondit !=null">
+                hcondit,
+            </if>
+            <if test="preward!=null">
+                preward,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="reward!=null">
+                #{reward},
+            </if>
+            <if test="lcondit!=null">
+                #{lcondit},
+            </if>
+            <if test="hcondit!=null">
+                #{hcondit},
+            </if>
+            <if test="preward!=null">
+                #{preward},
+            </if>
+        </trim>
+    </insert>
+</mapper>

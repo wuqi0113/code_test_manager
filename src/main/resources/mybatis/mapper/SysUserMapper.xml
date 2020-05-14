@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.SysUserMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.SysUser">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="nickname" property="nickname" />
+        <result column="email" property="email" />
+        <result column="passwd" property="passwd" />
+        <result column="createTime" property="createTime" />
+        <result column="lastLoginTime" property="lastLoginTime" />
+        <result column="status" property="status" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, nickname,email,passwd,createTime,lastLoginTime,`status`
+    </sql>
+
+    <select id="getByUserName" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.SysUser">
+        SELECT id, nickname,email,passwd,createTime,lastLoginTime,`status` FROM sys_user  WHERE nickname=#{username} or email=#{username}
+    </select>
+
+    <!-- 查询所有勋章记录 -->
+    <select id="listSysUser" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.SysUser">
+        SELECT
+       id, nickname,email,passwd,createTime,lastLoginTime,`status`
+        FROM sys_user
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+    <insert id="insertSysUser" parameterType="com.chainfuture.code.bean.SysUser">
+        INSERT INTO
+        sys_user (nickname, email, `status`, createTime, passwd, `describe`, lastLoginTime)
+        VALUES
+        (#{nickname}, #{email}, #{status}, #{createTime}, #{passwd}, #{describe}, #{lastLoginTime})
+    </insert>
+    <update id="updateSysUserName" parameterType="com.chainfuture.code.bean.SysUser" keyProperty="id" useGeneratedKeys="true">
+          update sys_user set
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="passwd != null and passwd != ''">
+                passwd = #{passwd},
+            </if>
+            <if test="lastLoginTime != null and lastLoginTime != ''">
+                lastLoginTime = #{lastLoginTime},
+            </if>
+            <if test="status != null and status != ''">
+                `status` = #{status}
+            </if>
+        where id=#{id}
+    </update>
+</mapper>

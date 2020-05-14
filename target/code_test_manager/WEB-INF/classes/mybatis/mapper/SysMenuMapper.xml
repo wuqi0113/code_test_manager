@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.SysMenuMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.SysMenu">
+        <id column="menuId" jdbcType="INTEGER" property="menuId" />
+        <result column="title"  property="title" />
+        <result column="href"  property="href" />
+        <result column="parentId"  property="parentId" />
+        <result column="spread"  property="spread" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        menuId,title,href,parentId,spread
+    </sql>
+    <select id="selMenuList" resultMap="BaseResultMap" parameterType="com.chainfuture.code.bean.SysMenu" >
+        select
+        <if test="distinct" >
+            distinct
+        </if>
+        <include refid="Base_Column_List" />
+        from sys_menu
+    </select>
+
+    <select id="selMenuCount" resultType="int">
+        SELECT  count(1) from sys_menu
+    </select>
+</mapper>

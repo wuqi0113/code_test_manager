@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.BindUserMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.BindUserExample">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="userId" column="userId"/>
+        <result property="address" column="address"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, userId, address
+    </sql>
+
+    <insert id="addBindUser" parameterType="com.chainfuture.code.bean.BindUserExample" useGeneratedKeys="true" keyProperty="id">
+        INSERT  INTO   code_bind_user
+        ( userId, address)
+        VALUES (#{userId}, #{address})
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+    </insert>
+
+</mapper>

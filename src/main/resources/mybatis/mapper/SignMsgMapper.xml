@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.SignMsgMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.SignMsg">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="sname" column="sname"/>
+        <result property="num" column="num"/>
+        <result property="signId" column="signId"/>
+        <result property="proAddress" column="proAddress"/>
+        <result property="status" column="status"/>
+        <result property="bindAddress" column="bindAddress"/>
+        <result property="type" column="type"/>
+        <result property="amount" column="amount"/>
+        <result property="mold" column="mold"/>
+        <result column="producer"  property="producer" />
+        <result column="verfiyNum"  property="verfiyNum" />
+    </resultMap>
+   <sql id="BaseResult">
+       id,sname,num,signId,proAddress, `status`,bindAddress,`type`,mold,producer,verfiyNum
+   </sql>
+
+    <select id="selSignMsgByAddrAndSignId"  resultType="com.chainfuture.code.bean.SignMsg">
+        SELECT <include refid="BaseResult"/>
+        FROM  code_sign_msg
+        WHERE   proAddress = #{proAddress}  AND  signId =#{signId}
+    </select>
+    <select id="getSignMsgByAddrAndSignId" parameterType="java.util.HashMap" resultType="com.chainfuture.code.bean.SignMsg">
+        SELECT <include refid="BaseResult"/>
+        FROM  code_sign_msg
+        WHERE   proAddress = #{proAddress}  AND  signId =#{signId}
+    </select>
+    <select id="getBatchBySname" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.SignMsg">
+        SELECT <include refid="BaseResult"/>
+        FROM  code_sign_msg
+        WHERE  sname = #{sname}
+    </select>
+    <select id="selTotalAmount" resultType="java.util.Map">
+        SELECT SUM(num*amount) totalAmount
+        FROM  code_sign_msg
+    </select>
+    <select id="getBatchByAddress" resultType="com.chainfuture.code.bean.SignMsg">
+        SELECT <include refid="BaseResult"/>
+        FROM code_sign_msg
+        WHERE  proAddress = #{proAddress}
+    </select>
+    <select id="getBatchById"  resultType="java.util.Map">
+       <!-- SELECT <include refid="BaseResult"/>
+        FROM code_sign_msg
+        WHERE  id = #{id}-->
+
+        SELECT csm.id,cp.proName,csm.sname,csm.num,csm.signId,csm.status,csm.proAddress,csm.type,csm.verfiyNum,cp.reward,csm.amount,csm.bindAddress
+        FROM code_sign_msg  csm LEFT JOIN  code_product  cp  ON  csm.bindAddress = cp.proAddress
+        WHERE csm.id = #{id}
+    </select>
+    <select id="getBatchListByAddress" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT <include refid="BaseResult"/>
+        FROM code_sign_msg
+        WHERE  status != 3  AND  bindAddress = #{address}   AND bindAddress IS NOT NULL
+    </select>
+    <select id="queryBatchList" resultType="java.util.Map">
+        SELECT csm.id,ifnull(cp.proName,"未挂接") proName,csm.sname,csm.num,csm.signId,csm.status,csm.proAddress,csm.type,csm.verfiyNum
+        FROM code_sign_msg  csm LEFT JOIN  code_product  cp  ON  csm.bindAddress = cp.proAddress
+        WHERE   mold = #{mold}
+        ORDER BY  csm.signId  DESC
+    </select>
+    <select id="selSignMsgList" resultMap="BaseResultMap" parameterType="com.chainfuture.code.bean.SignMsg">
+        SELECT  id,num,signId,proAddress,`status`,bindAddress,sname,`type``
+        FROM code_sign_msg
+        <if test="proAddress!=null">
+            where proAddress = #{proAddress}
+        </if>
+        ORDER by  id  desc
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+    <select id="selSignMsgCount" resultType="int" parameterType="com.chainfuture.code.bean.SignMsg">
+          select  count(id) from code_sign_msg
+        <if test="proAddress!=null">
+            where proAddress = #{proAddress}
+        </if>
+    </select>
+    <insert id="insertSignMsg" parameterType="com.chainfuture.code.bean.SignMsg" keyProperty="id" useGeneratedKeys="true">
+        insert  into  code_sign_msg
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sname !=null">
+                sname,
+            </if>
+            <if test="num !=null">
+                num,
+            </if>
+            <if test="proAddress !=null">
+                proAddress,
+            </if>
+            <if test="status!=null">
+                status,
+            </if>
+            <if test="signId!=null">
+                signId,
+            </if>
+            <if test="bindAddress!=null">
+                bindAddress,
+            </if>
+            <if test="type!=null">
+                `type`,
+            </if>
+            <if test="amount!=null">
+                amount,
+            </if>
+            <if test="mold!=null">
+                mold,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sname!=null">
+                #{sname},
+            </if>
+            <if test="num!=null">
+                #{num},
+            </if>
+            <if test="proAddress!=null">
+                #{proAddress},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+            <if test="signId!=null">
+                #{signId},
+            </if>
+            <if test="bindAddress!=null">
+                #{bindAddress},
+            </if>
+            <if test="type!=null">
+                #{type},
+            </if>
+            <if test="amount!=null">
+                #{amount},
+            </if>
+            <if test="mold!=null">
+                #{mold},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateSignMsg" parameterType="com.chainfuture.code.bean.SignMsg">
+        UPDATE code_sign_msg
+        <trim prefix="set" suffixOverrides=",">
+            <if test="sname != null and sname != ''">
+                sname= #{sname},
+            </if>
+            <if test="num != null">
+                num=#{num},
+            </if>
+            <if test="signId != null">
+                signId=#{signId},
+            </if>
+            <if test="proAddress != null">
+                proAddress=#{proAddress},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="bindAddress != null and bindAddress !=''">
+                bindAddress = #{bindAddress},
+            </if>
+            <if test="type != null">
+                `type` = #{type},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="mold != null ">
+                mold = #{mold},
+            </if>
+            <if test="producer!=null and producer!=''">
+                producer = #{producer},
+            </if>
+            <if test="verfiyNum != null">
+                verfiyNum = #{verfiyNum},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

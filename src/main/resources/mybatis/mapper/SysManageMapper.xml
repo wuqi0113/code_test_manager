@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.SysManageMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.SysManage">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="sname" column="sname"/>
+        <result property="address" column="address"/>
+        <result property="status" column="status"/>
+        <result property="phone" column="phone"/>
+        <result property="manageAddr" column="manageAddr"/>
+        <result property="name" column="name"/>
+        <result property="specialValid" column="specialValid"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,sname,`status`,address,manageAddr,`name`,specialValid,phone
+    </sql>
+
+    <select id="manageList" parameterType="java.util.HashMap"    resultType="java.util.HashMap">
+       select   CASE WHEN t.count IS  NULL THEN 0 ELSE t.count  END AS count,wu.address,wu.headimgurl,wu.nickname
+        from  		sys_manage  sm  left join  (
+				select count(1) count,dutyAddress		from  sys_auth_manage  where status=1 and   manageAddr = #{manageAddr}
+                <if test="startTime != null and startTime !='' ">
+                    <![CDATA[
+                        and	DATE_FORMAT(createTime, '%Y-%m-%d %H:%i:%s')>= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')
+                    ]]>
+                </if>
+                <if test="endTime != null and endTime !='' ">
+                    <![CDATA[
+                        and	DATE_FORMAT(createTime, '%Y-%m-%d %H:%i:%s')< DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')
+                    ]]>
+                </if>
+             GROUP BY  dutyAddress  ) t on sm.address=t.dutyAddress   left join   wechat_user wu on wu.address = sm.address    where   sm.manageAddr = #{manageAddr}  and sm.status = 1   order  by  t.count  desc
+    </select>
+
+    <select id="selSysManageByPAddrAndUAddr" parameterType="java.util.HashMap" resultType="com.chainfuture.code.bean.SysManage">
+        SELECT   id,sname,`status`,address,manageAddr,`name`,specialValid
+        FROM  sys_manage  where  `status` = 1 and  manageAddr = #{manageAddr}   and  address = #{address}
+    </select>
+    <select id="selSysManagerByUserAndModule"  parameterType="com.chainfuture.code.bean.SysManage"  resultType="com.chainfuture.code.bean.SysManage">
+        SELECT   id,sname,`status`,address,manageAddr,`name`,specialValid
+        FROM  sys_manage  where  `status` = 1 and  manageAddr = #{manageAddr}   and  address = #{address}
+    </select>
+    <select id="selSysManagerByUserAndSname"  parameterType="com.chainfuture.code.bean.SysManage"  resultType="com.chainfuture.code.bean.SysManage">
+        SELECT   id,sname,`status`,address,manageAddr,`name`,specialValid
+        FROM  sys_manage  where  `status` = 1 and  sname = #{sname}   and  address = #{address}
+    </select>
+
+    <select id="checkManager"  resultType="com.chainfuture.code.bean.SysManage">
+        SELECT   address
+        FROM  sys_manage
+        WHERE  `status` = 1
+        <if test="manageAddr!=null and manageAddr!=''">
+            and  manageAddr = #{manageAddr}
+        </if>
+    </select>
+    <select id="getManagerListByAddr" parameterType="java.util.Map" resultType="com.chainfuture.code.bean.SysManage">
+        SELECT   sm.id,sm.sname,sm.`status`,sm.address,sm.manageAddr,sm.`name`
+        FROM  sys_manage   sm   LEFT JOIN   wechat_user  wu   ON  sm.address = wu.address
+        WHERE  sm.`status` = 1
+        <if test="address!=null and address!=''">
+            and  sm.address = #{address}
+        </if>
+    </select>
+    <delete id="delManager" parameterType="com.chainfuture.code.bean.SysManage">
+        DELETE  FROM  sys_manage   where   address = #{address}   and    manageAddr = #{manageAddr}
+    </delete>
+
+    <select id="selSysManageListByAddr"   resultType="com.chainfuture.code.bean.SysManage">
+        SELECT   id,sname,status,address,manageAddr,name,specialValid
+        from sys_manage  where    address = #{address}   and   status = 1
+    </select>
+
+    <select id="selSysManageByAddr" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.SysManage">
+        SELECT <include refid="Base_Column_List"/>
+        from sys_manage  where  address = #{address} and `status` = 1
+    </select>
+    <select id="selSysManageByManageAddr" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.SysManage">
+        SELECT id,sname,`status`,address,manageAddr,`name`  from sys_manage  where `status`=1 and manageAddr = #{manageAddr}
+    </select>
+    <!-- 查询所有 -->
+    <select id="selSysManageList" resultType="com.chainfuture.code.bean.SysManageExample"  parameterType="com.chainfuture.code.bean.SysManageExample">
+        SELECT  id,sname, `status`, address,manageAddr,`name`
+        FROM sys_manage
+        <if test="status!=null">
+            where `status` =#{status}
+        </if>
+        ORDER by  id  desc
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+    <!-- 查询记录-->
+    <select id="selSysManageCount" resultType="int">
+        SELECT  count(id) FROM  sys_manage
+    </select>
+
+    <insert id="addSysManage" parameterType="com.chainfuture.code.bean.SysManage">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT  INTO sys_manage (sname, `status`, address,manageAddr,`name`,specialValid)
+        VALUES (#{sname}, #{status}, #{address},#{manageAddr},#{name},#{specialValid})
+    </insert>
+    <update id="updSysManage" parameterType="com.chainfuture.code.bean.SysManage">
+        UPDATE sys_manage
+        <set>
+            <if test="sname !=null">
+                sname = #{same},
+            </if>
+            <if test="address !=null">
+                address = #{address},
+            </if>
+            <if test="name !=null">
+                `name`=#{name},
+            </if>
+        </set>
+        where  `status` = 1 and manageAddr = #{manageAddr}
+    </update>
+</mapper>

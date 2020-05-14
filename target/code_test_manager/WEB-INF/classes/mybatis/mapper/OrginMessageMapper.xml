@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.OrginMessageMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.OrginMessage">
+        <id column="id" property="id" />
+        <result column="proAddress"  property="proAddress" />
+        <result column="originMessage"  property="originMessage" />
+        <result column="signMessage"  property="signMessage" />
+        <result column="codeId"  property="codeId" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, address, originMessage, signMessage, codeId
+    </sql>
+    <!-- 插入一条勋章记录 -->
+    <insert id="saveCode" parameterType="java.util.Map">
+        INSERT INTO
+        code_orgin_message (proAddress, originMessage, signMessage, codeId)
+        VALUES
+        (#{proAddress}, #{originMessage}, #{signMessage}, #{codeId})
+    </insert>
+</mapper>

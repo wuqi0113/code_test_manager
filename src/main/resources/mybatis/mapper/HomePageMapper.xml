@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.HomePageMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.HomePage">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="headImg" property="headImg" />
+        <result column="assetName" property="assetName" />
+        <result column="companyIntroduce" property="companyIntroduce" />
+        <result column="contactInfo" property="contactInfo" />
+        <result column="phone" property="phone" />
+        <result column="companyAddress" property="companyAddress" />
+        <result column="website" property="website" />
+        <result column="email" property="email" />
+        <result column="companyPublic" property="companyPublic" />
+        <result column="colorPickerHolder" property="colorPickerHolder" />
+        <result column="honorBanner" property="honorBanner" />
+        <result column="honorContent" property="honorContent" />
+        <result column="assetId" property="assetId" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, headImg,assetName,companyIntroduce,contactInfo,phone,companyAddress,website,email,companyPublic,colorPickerHolder,honorBanner,honorContent,assetId
+    </sql>
+
+    <select id="getHomePage"  resultType="com.chainfuture.code.bean.HomePage">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM code_homepage
+    </select>
+
+    <select id="listHomePage" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.HomePage">
+        SELECT
+         id, headImg,assetName,companyIntroduce,contactInfo,phone,companyAddress,website,email,companyPublic,colorPickerHolder,honorBanner,honorContent
+        FROM code_homepage where assetName='DEMO'
+    </select>
+    <insert id="insertHomePage" parameterType="com.chainfuture.code.bean.HomePage" keyProperty="id" useGeneratedKeys="true">
+        insert into  code_homepage (headImg,assetName,companyIntroduce,contactInfo,phone,companyAddress,website,email,companyPublic,colorPickerHolder,honorBanner,honorContent,assetId)
+        VALUES (#{headImg},#{assetName},#{companyIntroduce},#{contactInfo},#{phone},#{companyAddress},#{website},#{email},#{companyPublic},#{colorPickerHolder},#{honorBanner},#{honorContent},#{assetId})
+    </insert>
+    <update id="updateHomePage" parameterType="com.chainfuture.code.bean.HomePage" keyProperty="id" useGeneratedKeys="true">
+        update code_homepage
+        <set>
+            <if test="headImg != null and headImg != ''">
+                headImg=#{headImg},
+            </if>
+            <if test="assetId != null">
+                assetId=#{assetId},
+            </if>
+            <if test="companyIntroduce != null and companyIntroduce != ''">
+                companyIntroduce = #{companyIntroduce},
+            </if>
+            <if test="contactInfo != null and contactInfo != ''">
+                contactInfo = #{contactInfo},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="companyAddress != null and companyAddress != ''">
+                companyAddress = #{companyAddress},
+            </if>
+            <if test="website != null and website != ''">
+                website = #{website},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="companyPublic != null and companyPublic != ''">
+                companyPublic = #{companyPublic},
+            </if>
+            <if test="colorPickerHolder != null and colorPickerHolder != ''">
+                colorPickerHolder = #{colorPickerHolder},
+            </if>
+            <if test="honorBanner != null and honorBanner != ''">
+                honorBanner = #{honorBanner},
+            </if>
+            <if test="honorContent != null and honorContent != ''">
+                honorContent = #{honorContent},
+            </if>
+        </set>
+        where assetName='DEMO'
+    </update>
+</mapper>

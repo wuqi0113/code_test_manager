@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd
+        http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring
+        http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.2.xsd">
+
+    <!-- 开启注解 -->
+    <mvc:annotation-driven />
+    <!-- 配置注解扫描的包路径 -->
+    <context:component-scan base-package="com.chainfuture.code.controller">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <context:component-scan base-package="com.chainfuture.code.swagger"/>
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter" /><!-- json转换器 -->
+            </list>
+        </property>
+    </bean>
+    <!--<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />-->
+
+    <bean id="mappingJacksonHttpMessageConverter"    class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" >
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+                <value>text/html;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 配置使用 SimpleMappingExceptionResolver 来映射异常 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionAttribute" value="ex"></property>
+        <property name="exceptionMappings">
+            <props>
+                <prop key="java.lang.ArithmeticException">error</prop>
+            </props>
+        </property>
+    </bean>
+
+
+
+
+
+    <!-- 配置视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/"
+          p:suffix=".jsp" />
+
+    <!-- 配置 multipartResolver 以支持文件上传-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="maxUploadSize" value="4096000"/>
+        <property name="maxInMemorySize" value="4096000"></property>
+    </bean>
+
+    <!-- 把静态资源文件css js 交给默认servlet去处理，而不用springmvc controller去处理 -->
+    <mvc:default-servlet-handler/>
+
+    <!-- 配置静态资源映射， 好处是映射到的静态资源都 进行缓存，提供性能 -->
+    <mvc:resources location="/js/" mapping="/js/**"/>
+    <mvc:resources location="/css/" mapping="/css/**"/>
+    <mvc:resources location="/images/" mapping="/images/**"/>
+    <mvc:resources location="/view/" mapping="/views/**"/>
+    <!-- 直接把一个请求对应到一个视图
+    <mvc:view-controller path="/index" view-name="index"/>
+ -->
+    <!-- <mvc:view-controller path="/product/listProduct.do" view-name="product/listProduct"/>  -->
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="**/*login*" />
+            <mvc:exclude-mapping path="/api/*" />
+            <mvc:exclude-mapping path="/tast/*" />
+            <mvc:exclude-mapping path="/**/fonts/*"/>
+            <mvc:exclude-mapping path="/**/*.css"/>
+            <mvc:exclude-mapping path="/public/file_list/**"/>
+            <mvc:exclude-mapping path="/**/*.js"/>
+            <mvc:exclude-mapping path="/**/*.png"/>
+            <mvc:exclude-mapping path="/**/*.gif"/>
+            <mvc:exclude-mapping path="/admin/getMenus"/>
+            <mvc:exclude-mapping path="/*/check*"/>
+            <mvc:exclude-mapping path="/images/favicon.ico"/>
+            <mvc:exclude-mapping path="/**/*.jpg"/>
+            <mvc:exclude-mapping path="/**/*.svg"/>
+            <mvc:exclude-mapping path="/**/*.wuff"/>
+            <mvc:exclude-mapping path="/**/*.wuff2"/>
+            <mvc:exclude-mapping path="/**/*.jpeg"/>
+            <mvc:exclude-mapping path="/**/*validatecode*"/>
+            <mvc:exclude-mapping path="/**/*error*"/>
+            <mvc:exclude-mapping path="/**/to*"/>
+            <mvc:exclude-mapping path="/**/get*"/>
+            <mvc:exclude-mapping path="/**/check*"/>
+            <bean class="com.chainfuture.code.interceptor.LoginInterceptor"></bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/openapi/*"/>
+            <mvc:exclude-mapping path="/openapi/novalid/*"/>
+            <bean class="com.chainfuture.code.interceptor.OpenApiInterceptor"></bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/backapi/*"/>
+            <mvc:exclude-mapping path="/backapi/admin/*"/>
+            <bean class="com.chainfuture.code.interceptor.BackApiInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <task:annotation-driven />
+    <!-- 指定扫描位置 -->
+    <context:annotation-config />
+    <bean
+            class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+    <context:component-scan base-package="com.chainfuture.code.quartz" />
+</beans>

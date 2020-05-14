@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.BounsBillMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.BounsBill">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="productName" column="productName"/>
+        <result property="signId" column="signId"/>
+        <result property="amount" column="amount"/>
+        <result property="createTime" column="createTime"/>
+        <result property="receiveTime" column="receiveTime"/>
+        <result property="receiveAddress" column="receiveAddress"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, productName, signId, amount, createTime, receiveTime, receiveAddress, status
+    </sql>
+    <select id="selBounsBillList" resultType="com.chainfuture.code.bean.BounsBill" parameterType="java.lang.Integer">
+        SELECT <include refid="Base_Column_List"/>
+        FROM  code_bouns_bill
+        WHERE  receiveAddress  IS  NOT NULL
+        <if test="status!=null">
+            AND  status=#{status}
+        </if>
+    </select>
+    <!-- 插入一条记录 -->
+    <insert id="insertBounsBill" parameterType="com.chainfuture.code.bean.BounsBill">
+        INSERT INTO
+        code_bouns_bill (productName, signId, amount, createTime, receiveTime, receiveAddress, status)
+        VALUES
+        (#{productName},#{signId},#{amount},#{createTime},#{receiveTime},#{receiveAddress},#{status})
+    </insert>
+    <!-- 修改信息 -->
+    <update id="updateBounsBill" parameterType="com.chainfuture.code.bean.BounsBill">
+        UPDATE code_bouns_bill
+        <trim prefix="set" suffixOverrides=",">
+            <if test="productName != null ">
+                productName=#{productName},
+            </if>
+            <if test="signId != null">
+                signId=#{signId},
+            </if>
+            <if test="amount != null">
+                amount=#{amount},
+            </if>
+            <if test="createTime != null">
+                createTime=#{createTime},
+            </if>
+            <if test="receiveTime != null">
+                receiveTime=#{receiveTime},
+            </if>
+            <if test="receiveAddress != null">
+                receiveAddress=#{receiveAddress},
+            </if>
+            <if test="status !=null">
+                status=#{status},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+</mapper>

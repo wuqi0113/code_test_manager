@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.InuSetMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.InuSet">
+        <id column="id"  property="id" />
+        <result column="insuranceType" property="insuranceType" />
+        <result column="year" property="year" />
+        <result column="amount" property="amount" />
+        <result column="rewardNum" property="rewardNum" />
+        <result column="multiple" property="multiple" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,insuranceType,`year`,amount,rewardNum,multiple
+    </sql>
+
+    <select id="selInuSet" parameterType="int" resultType="com.chainfuture.code.bean.InuSetExample">
+         select  id,insuranceType,`year`,amount,rewardNum,multiple
+        FROM code_inu_set where  `year` = #{year}
+    </select>
+
+    <select id="getInuSetList"  parameterType="int"  resultType="com.chainfuture.code.bean.InuSetExample">
+      select  id,insuranceType,`year`,amount,rewardNum,multiple
+        FROM code_inu_set where  insuranceType = #{insuranceType}
+    </select>
+</mapper>

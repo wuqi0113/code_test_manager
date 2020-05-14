@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.FiledsMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.CustFileds">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" property="name" />
+        <result column="sname" property="sname" />
+        <result column="stype" property="stype" />
+        <result column="unit" property="unit" />
+        <result column="issingle" property="issingle" />
+        <result column="lengthes" property="lengthes" />
+        <result column="parentid" property="parentid" />
+        <result column="isverifiy" property="isverifiy" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, name,sname,stype,unit,issingle,lengthes,parentid, isverifiy
+    </sql>
+
+    <update id="truncateTable">
+        truncate table  cust_fileds
+    </update>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.chainfuture.code.bean.CustFileds">
+        insert into cust_fileds (id, name, sname,
+        unit, issingle, lengthes, parentid,
+        stype, isverifiy)
+        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{sname,jdbcType=VARCHAR},
+        #{unit,jdbcType=VARCHAR}, #{issingle,jdbcType=VARCHAR}, #{lengthes,jdbcType=INTEGER}, #{parentid,jdbcType=INTEGER},
+        #{stype,jdbcType=LONGVARCHAR}, #{isverifiy})
+    </insert>
+
+
+</mapper>

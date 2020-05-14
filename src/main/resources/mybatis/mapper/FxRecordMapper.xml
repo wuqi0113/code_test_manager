@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.FxRecordMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.FxRecord">
+        <id column="id" property="id" />
+        <result column="userId" property="userId" />
+        <result column="fxUserId"  property="fxUserId" />
+        <result column="orderId" property="orderId" />
+        <result column="status"  property="status" />
+        <result column="time"  property="time" />
+        <result column="money"  property="money" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,userId,fxUserId,orderId,status,time,money
+    </sql>
+    <insert id="insertFxRecord" keyProperty="id" useGeneratedKeys="true" parameterType="com.chainfuture.code.bean.FxRecord">
+        insert  into  fx_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId !=null">
+                userId,
+            </if>
+            <if test="fxUserId !=null">
+                fxUserId,
+            </if>
+            <if test="orderId!=null">
+                orderId,
+            </if>
+            <if test="status!=null">
+                status,
+            </if>
+            <if test="time !=null">
+                time,
+            </if>
+            <if test="money !=null">
+                money,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId!=null">
+                #{userId},
+            </if>
+            <if test="fxUserId!=null">
+                #{fxUserId},
+            </if>
+            <if test="orderId!=null">
+                #{orderId},
+            </if>
+            <if test="status!=null">
+                #{status},
+            </if>
+            <if test="time!=null">
+                #{time},
+            </if>
+            <if test="money!=null">
+                #{money},
+            </if>
+        </trim>
+    </insert>
+</mapper>

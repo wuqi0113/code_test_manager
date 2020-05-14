@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.ProductTraceabilityMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.ProductTraceability">
+        <id column="id" property="id" />
+        <result column="proAddress"  property="proAddress" />
+        <result column="enterPrise"  property="enterPrise" />
+        <result column="handler"  property="handler" />
+        <result column="itemName"  property="itemName" />
+        <result column="itemSize"  property="itemSize" />
+        <result column="time"  property="time" />
+        <result column="remarks"  property="remarks" />
+        <result column="longitude"  property="longitude" />
+        <result column="latitude"  property="latitude" />
+        <result column="country"  property="country" />
+        <result column="province"  property="province" />
+        <result column="city"  property="city" />
+        <result column="area"  property="area" />
+        <result column="detailInfo"  property="detailInfo" />
+        <result column="image"  property="image" />
+    </resultMap>
+    <sql id="Base_Column_List">
+          id,proAddress,enterPrise,handler,itemName,itemSize,`time`,remarks,longitude,latitude,country,province,city,area,detailInfo
+    </sql>
+
+    <!-- 查询所有记录 -->
+    <select id="listProductTraceability" resultType="com.chainfuture.code.bean.ProductTraceability">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM code_Product_Traceability
+        <if test="proAddress != null and proAddress != ''">
+            where  proAddress=#{proAddress}
+        </if>
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.chainfuture.code.bean.ProductTraceability">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM code_Product_Traceability
+        WHERE   id=#{id}
+    </select>
+    <!-- 查询记录数 -->
+    <select id="queryCount" parameterType="com.chainfuture.code.bean.ProductTraceability" resultType="int">
+        SELECT count(id) FROM code_Product_Traceability
+    </select>
+
+    <!-- 插入一条勋章记录 -->
+    <insert id="saveProductTraceability" parameterType="com.chainfuture.code.bean.ProductTraceability">
+        INSERT INTO
+        code_Product_Traceability (proAddress,enterPrise,handler,itemName,itemSize,`time`,remarks,longitude,latitude,country,province,city,area,detailInfo,image)
+        VALUES
+        (#{proAddress},#{enterPrise},#{handler},#{itemName},#{itemSize},#{time},#{remarks},#{longitude},#{latitude},#{country},#{province},#{city},#{area},#{detailInfo},#{image})
+    </insert>
+
+    <!-- 修改勋章信息 -->
+    <update id="updateProductTraceability" parameterType="com.chainfuture.code.bean.ProductTraceability">
+        UPDATE code_product_traceability
+        <trim prefix="set" suffixOverrides=",">
+            <if test="proAddress != null and proAddress != ''">
+                proAddress = #{proAddress},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+</mapper>

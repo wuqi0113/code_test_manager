@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.PublicTipsMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.PublicTipsExample">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="identify" column="identify"/>
+        <result property="message" column="message"/>
+        <result property="type" column="type"/>
+    </resultMap>
+    <sql id="BaseList">
+        id, identify, message, `type`
+    </sql>
+    <!-- 查询所有勋章记录 -->
+    <select id="getTipsMessage" resultType="com.chainfuture.code.bean.PublicTipsExample">
+        SELECT
+        <include refid="BaseList"/>
+        FROM code_public_tips   where 1=1
+        <if test="identify != null  and  identify != ''">
+            and identify = #{identify}
+        </if>
+        <if test="type !=null and type != ''">
+            and `type` = #{type}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.AuthManageMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.AuthManage">
+        <id column="mid" jdbcType="INTEGER" property="mid" />
+        <result property="openId" column="openId"/>
+        <result property="address" column="address"/>
+        <result property="status" column="status"/>
+        <result property="phone" column="phone"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="manageAddr" column="manageAddr"/>
+        <result property="operation" column="operation"/>
+        <result property="isPayment" column="isPayment"/>
+        <result property="extend" column="extend"/>
+        <result property="specialValid" column="specialValid"/>
+        <result property="dutyAddress" column="dutyAddress"/>
+        <result property="detailClause" column="detailClause"/>
+        <result property="upLinkInfo" column="upLinkInfo"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        mid,openId,address,status,phone,createTime,updateTime,manageAddr,operation,isPayment,extend,specialValid,dutyAddress,detailClause,upLinkInfo
+    </sql>
+
+
+    <select id="getHangUpRecordList" resultType="java.util.HashMap">
+        /*SELECT  sam.createTime,sam.dutyAddress,wu1.nickname as dutyPeople,wu1.headimgurl as dutyPeopleImg,csm.sname as nickname,wu1.phone as mobile,sam.manageAddr, sam.operation,sam.address,csm.num
+        FROM  sys_auth_manage  sam
+        LEFT JOIN   code_sign_msg  csm on  csm.proAddress  =  sam.address
+        LEFT JOIN  wechat_user  wu1  on  sam.dutyAddress = wu1.address
+        WHERE   sam.status = 1*/
+        SELECT  sam.createTime,sam.dutyAddress,wu1.nickname as dutyPeople,wu1.headimgurl as dutyPeopleImg,cp.proName as nickname,wu1.phone as mobile,sam.manageAddr, sam.operation,sam.address
+        FROM  (
+                  SELECT  RIGHT(upLinkInfo,LOCATE('∈',upLinkInfo)-1)  proAddress,createTime,dutyAddress,manageAddr,operation,address,`status` FROM  sys_auth_manage
+                )  sam
+        LEFT JOIN  code_product  cp  on sam.proAddress = cp.proAddress
+        LEFT JOIN  wechat_user  wu1  on  sam.dutyAddress = wu1.address
+        WHERE   sam.status = 1
+        <if test="dutyAddress != null and dutyAddress != ''">
+            and  sam.dutyAddress = #{dutyAddress}
+        </if>
+        <if test="operation !=null and operation !=''">
+            and  sam.operation = #{operation}
+        </if>
+        ORDER BY  sam.createTime  DESC
+    </select>
+
+    <select id="getBatchList" resultType="java.util.HashMap">
+        SELECT  sam.createTime,sam.dutyAddress,wu1.nickname as dutyPeople,wu1.headimgurl as dutyPeopleImg,csm.sname as nickname,wu1.phone as mobile,sam.manageAddr, sam.operation,sam.address,csm.num
+        FROM  sys_auth_manage  sam
+        LEFT JOIN   code_sign_msg  csm on  csm.proAddress  =  sam.address
+        LEFT JOIN  wechat_user  wu1  on  sam.dutyAddress = wu1.address
+        WHERE   sam.status = 1
+        <if test="dutyAddress != null and dutyAddress != ''">
+            and  sam.dutyAddress = #{dutyAddress}
+        </if>
+        <if test="operation !=null and operation !=''">
+            and  sam.operation = #{operation}
+        </if>
+        ORDER BY  sam.createTime  DESC
+    </select>
+
+
+    <select id="getProductRecordList" resultType="java.util.HashMap">
+        SELECT  sam.createTime,sam.dutyAddress,wu1.nickname as dutyPeople,wu1.headimgurl as dutyPeopleImg,cp.proName as nickname,wu1.phone as mobile,sam.manageAddr, sam.operation,sam.address
+        FROM  sys_auth_manage  sam
+        LEFT JOIN   code_product  cp on  cp.proAddress  =  sam.address
+        LEFT JOIN  wechat_user  wu1  on  sam.dutyAddress = wu1.address
+        WHERE   sam.status = 1
+        <if test="dutyAddress != null and dutyAddress != ''">
+            and  sam.dutyAddress = #{dutyAddress}
+        </if>
+        <if test="operation !=null and operation !=''">
+            and  sam.operation = #{operation}
+        </if>
+        ORDER BY  sam.createTime  DESC
+    </select>
+
+    <select id="getBaseSet" resultType="java.util.HashMap">
+        SELECT  sam.createTime,sam.dutyAddress,wu1.nickname as dutyPeople,wu1.headimgurl as dutyPeopleImg ,wu1.phone as mobile,sam.manageAddr,sm.moduleName , sam.operation,sam.address  /*,cp.proName */ ,wu2.nickname, wu2.headimgurl,wu2.phone     FROM  sys_auth_manage  sam   LEFT JOIN  wechat_user  wu1  on  sam.dutyAddress = wu1.address
+        /*LEFT join   code_product  cp on  cp.proAddress  =  sam.address*/
+        LEFT JOIN  wechat_user  wu2  on  sam.address = wu2.address
+        LEFT JOIN   sys_module  sm  on   sam.manageAddr=sm.address
+        WHERE   sam.status = 1
+        <if test="dutyAddress != null and dutyAddress != ''">
+            and  sam.dutyAddress = #{dutyAddress}
+        </if>
+        <if test="operation !=null and operation !=''">
+            and  sam.operation = #{operation}
+        </if>
+        ORDER BY  sam.createTime  DESC
+    </select>
+
+    <select id="getInvitRecord" resultType="java.util.HashMap">
+        SELECT  sam.createTime,sam.dutyAddress,wu1.nickname as dutyPeople,wu1.headimgurl as dutyPeopleImg ,wu1.phone as mobile,sam.manageAddr,sm.moduleName , sam.operation,sam.address  /*,cp.proName */ ,wu2.nickname, wu2.headimgurl,wu2.phone     FROM  sys_auth_manage  sam   LEFT JOIN  wechat_user  wu1  on  sam.dutyAddress = wu1.address
+        /*LEFT join   code_product  cp on  cp.proAddress  =  sam.address*/
+        LEFT JOIN  wechat_user  wu2  on  sam.address = wu2.address
+        LEFT JOIN   sys_module  sm  on   sam.manageAddr=sm.address
+        WHERE   sam.status = 1
+        <if test="dutyAddress != null and dutyAddress != ''">
+            and  sam.dutyAddress = #{dutyAddress}
+        </if>
+        <if test="operation !=null and operation !=''">
+            and  sam.operation = #{operation}
+        </if>
+        ORDER BY  sam.createTime  DESC
+    </select>
+
+    <select id="getRecordListByModule" resultType="java.util.HashMap">
+        SELECT  sam.createTime,sam.dutyAddress,wu1.nickname as dutyPeople,wu1.headimgurl as dutyPeopleImg ,wu1.phone as mobile,sam.manageAddr,sm.moduleName , sam.operation,sam.address  /*,cp.proName */ ,wu2.nickname, wu2.headimgurl,wu2.phone     FROM  sys_auth_manage  sam   LEFT JOIN  wechat_user  wu1  on  sam.dutyAddress = wu1.address
+        /*LEFT join   code_product  cp on  cp.proAddress  =  sam.address*/
+        LEFT JOIN  wechat_user  wu2  on  sam.address = wu2.address
+        LEFT JOIN   sys_module  sm  on   sam.manageAddr=sm.address
+        WHERE   sam.status = 1
+        <if test="dutyAddress != null and dutyAddress != ''">
+            and  sam.dutyAddress = #{dutyAddress}
+        </if>
+        <if test="manageAddr !=null and manageAddr !=''">
+            and  sam.manageAddr = #{manageAddr}
+        </if>
+        ORDER BY  sam.createTime  DESC
+    </select>
+
+
+    <select id="selAuthManageByAddr" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.AuthManage">
+         select mid,openId, `status`, address,phone,createTime,updateTime,manageAddr,operation,isPayment,extend,specialValid,dutyAddress,detailClause,upLinkInfo
+        FROM sys_auth_manage where 1=1
+        <if test="address !=null address !=''">
+              and address=#{address}
+        </if>
+        <if test="manageAddr !=null manageAddr !=''">
+            and manageAddr=#{manageAddr}
+        </if>
+        <if test="status !=null status !=''">
+            and status=#{status}
+        </if>
+    </select>
+    <select id="selSysManageByManageAddr" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.AuthManage">
+        select mid,openId, `status`, address,phone,createTime,updateTime,manageAddr,operation,isPayment,extend,specialValid,dutyAddress,detailClause,upLinkInfo
+        FROM sys_auth_manage
+        where  manageAddr = #{manageAddr}
+    </select>
+
+    <select id="selAuthManageById" parameterType="java.lang.Integer" resultType="com.chainfuture.code.bean.AuthManage">
+        select mid,openId, `status`, address,phone,createTime,updateTime,manageAddr as insurancePro,manageAddr,operation, detailClause,isPayment ,extend,specialValid,dutyAddress,upLinkInfo
+        FROM sys_auth_manage
+            where  mid = #{mid}
+    </select>
+
+    <select id="selAuthManageByOpenId" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.AuthManage">
+        select mid,openId, `status`, address,phone,createTime,updateTime,manageAddr as insurancePro,operation, detailClause,isPayment ,extend,specialValid,dutyAddress,upLinkInfo
+        FROM sys_auth_manage
+            where  openId = #{openId}
+    </select>
+    <!-- 查询所有 -->
+    <select id="selAuthManageList" resultType="com.chainfuture.code.bean.AuthManage">
+        SELECT  mid,openId, `status`, address,phone,createTime,updateTime,manageAddr,operation,isPayment,extend,specialValid,dutyAddress,detailClause,upLinkInfo
+        FROM sys_auth_manage   ORDER by  mid  desc
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+
+    </select>
+    <!-- 查询记录-->
+    <select id="selAuthManageCount" resultType="int">
+        SELECT  count(mid) FROM  sys_auth_manage
+    </select>
+
+    <insert id="addAuthManage" parameterType="com.chainfuture.code.bean.AuthManage">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="mid">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+--         INSERT  INTO sys_auth_manage (openId, `status`, address,phone,createTime,updateTime,manageAddr,operation,isPayment,extend)
+--         VALUES (#{openId}, #{status}, #{address},#{phone},#{createTime},#{updateTime},#{manageAddr},#{operation},#{isPayment},#{extend})
+        insert into sys_auth_manage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="openId != null">
+                openId,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+            <if test="updateTime != null">
+                updateTime,
+            </if>
+            <if test="operation != null">
+                operation,
+            </if>
+            <if test="isPayment != null">
+                isPayment,
+            </if>
+            <if test="extend != null">
+                extend,
+            </if>
+            <if test="manageAddr != null">
+                manageAddr,
+            </if>
+            <if test="specialValid != null">
+                specialValid,
+            </if>
+            <if test="dutyAddress != null">
+                dutyAddress,
+            </if>
+            <if test="detailClause != null">
+                detailClause,
+            </if>
+            <if test="upLinkInfo != null">
+                upLinkInfo,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="openId != null">
+                #{openId},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="address != null">
+                #{address},
+            </if>
+            <if test="phone != null">
+                #{phone},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="operation != null">
+                #{operation},
+            </if>
+            <if test="isPayment != null">
+                #{isPayment},
+            </if>
+            <if test="extend != null">
+                #{extend},
+            </if>
+            <if test="manageAddr != null">
+                #{manageAddr},
+            </if>
+            <if test="specialValid != null">
+                #{specialValid},
+            </if>
+            <if test="dutyAddress != null">
+                #{dutyAddress},
+            </if>
+            <if test="detailClause != null">
+                #{detailClause},
+            </if>
+            <if test="upLinkInfo != null">
+                #{upLinkInfo},
+            </if>
+        </trim>
+    </insert>
+    <update id="upSysAuthManageStatus" parameterType="com.chainfuture.code.bean.AuthManage">
+        UPDATE sys_auth_manage
+        <trim prefix="set" suffixOverrides=",">
+            <if test="address !=null">
+                address = #{address},
+            </if>
+            <if test="status !=null">
+                status = #{status},
+            </if>
+        </trim>
+        WHERE mid = #{mid}
+    </update>
+</mapper>

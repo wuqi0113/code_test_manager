@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.SysModelMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.SysModel">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="sname" column="sname"/>
+        <result property="moduleName" column="moduleName"/>
+        <result property="address" column="address"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,sname,moduleName,address
+    </sql>
+    <!-- 查询所有勋章记录 -->
+    <select id="getModelList" resultType="java.util.HashMap">
+        SELECT id,sname,moduleName,address as  manageAddr
+        FROM  sys_model
+    </select>
+</mapper>

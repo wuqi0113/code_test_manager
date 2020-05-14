@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.CustRolesMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.CustRoles">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="sname" column="sname"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parentId"/>
+        <result property="rolesInfo" column="rolesInfo"/>
+        <result property="roleAddress" column="roleAddress"/>
+    </resultMap>
+    <!-- 查询所有勋章记录 -->
+    <select id="getCustRolesList" resultType="com.chainfuture.code.bean.CustRoles">
+        SELECT  id,name,parentId,rolesInfo,roleAddress,sname
+        FROM cust_roles
+    </select>
+
+</mapper>

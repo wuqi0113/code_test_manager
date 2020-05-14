@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.SysTxToMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.SysTxTo">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="Txid" column="Txid"/>
+        <result property="FromAddress" column="FromAddress"/>
+        <result property="ToAddress" column="ToAddress"/>
+        <result property="AssetId" column="AssetId"/>
+        <result property="Amount" column="Amount"/>
+        <result property="Amount2" column="Amount2"/>
+        <result property="AssetId2" column="AssetId2"/>
+        <result property="IsSendBack" column="IsSendBack"/>
+        <result property="Tag" column="Tag"/>
+        <result property="PairId" column="PairId"/>
+        <result property="Data" column="Data"/>
+    </resultMap>
+
+    <!-- 查询所有 -->
+    <select id="selSysTxList" resultType="com.chainfuture.code.bean.SysTxTo">
+        SELECT  id,Txid,FromAddress,ToAddress,AssetId,Amount,Amount2,AssetId2,IsSendBack,Tag,PairId,`Data`
+        FROM sys_tx_to  ORDER by  id  desc
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+
+    </select>
+    <!-- 查询记录-->
+    <select id="selSysTxCount" resultType="int">
+        SELECT  count(id) FROM  sys_tx_to
+    </select>
+
+    <insert id="addSysTxTo" parameterType="com.chainfuture.code.bean.SysTxTo">
+        INSERT  INTO sys_tx_to (Txid,FromAddress,ToAddress,AssetId,Amount,Amount2,AssetId2,IsSendBack,Tag,PairId,`Data`)
+        VALUES (#{Txid}, #{FromAddress}, #{ToAddress},#{AssetId},#{Amount},#{Amount2},#{AssetId2},#{IsSendBack},#{Tag},#{PairId},#{Data})
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+       /* INSERT  INTO sys_tx_to (txId,fromAddr,toAddr,assetId,busiData,`time`,amount,way)
+        VALUES (#{txId}, #{fromAddr}, #{toAddr},#{assetId},#{busiData},#{time},#{amount},#{way})*/
+    </insert>
+</mapper>

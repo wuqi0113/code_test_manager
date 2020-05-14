@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.InuPriceMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.InuPrice">
+        <id column="id"  property="id" />
+        <result column="price" property="price" />
+        <result column="recordTime" property="recordTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,price,recordTime
+    </sql>
+
+    <select id="selPrice"  resultType="com.chainfuture.code.bean.InuPriceExample">
+      select  id,price,recordTime
+        FROM code_inu_price
+    </select>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.UserMedalMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.UserMedal">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="userId"  property="userId" />
+        <result column="medalId"  property="medalId" />
+        <result column="total"  property="total" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, userId, medalId, total
+    </sql>
+
+    <select id="selectSql"  resultType="java.util.Map">
+          select  count(c.productAddress) medalCount
+          from  code_medal  m   left  join   codetx  c   on  c.productAddress=m.medalAddr
+          WHERE  m.product='1ojviBeqSqasEKRWqifwLwwP5MzJN181y'
+          group by m.medalAddr
+    </select>
+    <select id="getMedalCount" resultType="int">
+        select  count(1) from code_medal  where  product='1ojviBeqSqasEKRWqifwLwwP5MzJN181y'
+    </select>
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.TaskFramMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.TaskFram">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="taskName" column="taskName"/>
+        <result property="taskUrl" column="taskUrl"/>
+        <result property="moduleName" column="moduleName"/>
+        <result property="parentId" column="parentId"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+       id, taskName, taskUrl, moduleName,parentId
+    </sql>
+    <!-- 查询所有勋章记录 -->
+    <select id="getTaskFramByModuleName" resultType="com.chainfuture.code.bean.TaskFram">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM  code_task_fram
+        WHERE moduleName = #{moduleName}
+    </select>
+    <select id="getTaskFramByParentId" resultType="com.chainfuture.code.bean.TaskFram">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM  code_task_fram
+        WHERE parentId = #{parentId}
+    </select>
+</mapper>

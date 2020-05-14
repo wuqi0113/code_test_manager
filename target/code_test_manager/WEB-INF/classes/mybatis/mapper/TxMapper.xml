@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.TxMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.Tx">
+        <id column="id"  property="id" />
+        <result column="user" property="user" />
+        <result column="product" property="product" />
+        <result column="productAddress" property="productAddress" />
+        <result column="singleProductID" property="singleProductID" />
+        <result column="toProductTxID" property="toProductTxID" />
+        <result column="toPlantTxID" property="toPlantTxID" />
+        <result column="verifiyDate" property="verifiyDate" />
+        <result column="verifiyType" property="verifiyType" />
+        <result column="nickname" property="nickname" />
+        <result column="timeStamp" property="timeStamp" />
+        <result column="token_number" property="token_number" />
+        <result column="txType" property="txType" />
+
+        <result column="startTime" property="startTime" />
+        <result column="endTime" property="endTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,`user`,product,productAddress,singleProductID,toProductTxID,toPlantTxID,verifiyDate,verifiyType,nickname,`timeStamp`,token_number,txType
+    </sql>
+
+    <select id="getUserList"  resultType="com.chainfuture.code.bean.Tx">
+      select c.id,c.productAddress,c.toPlantTxID,c.verifiyDate,c.verifiyType,w.nickname
+        FROM codetx c left join  wechat_user  w  on c.`user`=w.openid where LENGTH(c.singleProductID)>5
+        <if test="verifiyType!=null">
+            and c.verifiyType=#{verifiyType}
+        </if>
+        <if test="startTime != null and startTime !='' ">
+            <![CDATA[
+				and	DATE_FORMAT(c.verifiyDate, '%Y-%m-%d')>= DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+			]]>
+        </if>
+        <if test="endTime != null and endTime !='' ">
+            <![CDATA[
+				and	DATE_FORMAT(c.verifiyDate, '%Y-%m-%d')<= DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+			]]>
+        </if>
+        <if test="productAddress != null and productAddress !='' ">
+            and c.productAddress=#{productAddress}
+        </if>
+        order by  c.verifiyDate desc
+
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+
+    <select id="queryCount" parameterType="com.chainfuture.code.bean.Tx" resultType="int">
+        SELECT
+        count(1)
+        FROM codetx c left join  wechat_user  w  on c.`user`=w.openid
+        where LENGTH(c.singleProductID)>5
+        <if test="verifiyType!=null and verifiyType!=''">
+            and c.verifiyType=#{verifiyType}
+        </if>
+        <if test="startTime != null and startTime !='' ">
+            <![CDATA[
+				and	DATE_FORMAT(c.verifiyDate, '%Y-%m-%d')>= DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+			]]>
+        </if>
+        <if test="endTime != null and endTime !='' ">
+            <![CDATA[
+				and	DATE_FORMAT(c.verifiyDate, '%Y-%m-%d')<= DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+			]]>
+        </if>
+        <if test="productAddress != null and productAddress !='' ">
+            and c.productAddress=#{productAddress}
+        </if>
+    </select>
+</mapper>

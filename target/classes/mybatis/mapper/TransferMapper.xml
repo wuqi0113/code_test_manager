@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.TransferMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.Transfer">
+        <id column="id" property="id" />
+        <result column="assetName"  property="assetName" />
+        <result column="product"  property="product" />
+        <result column="apiName"  property="apiName" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, assetName, product, apiName
+    </sql>
+
+    <!-- 插入一条勋章记录 -->
+    <insert id="insertTransfer" parameterType="java.util.HashMap">
+        INSERT INTO
+        code_medal (assetName, product, apiName)
+        VALUES
+        (#{assetName},  #{product}, #{apiName})
+    </insert>
+
+    <!-- 修改勋章信息 -->
+    <update id="updateMedal" parameterType="com.chainfuture.code.bean.Transfer">
+        UPDATE code_medal
+        <trim prefix="set" suffixOverrides=",">
+            <if test="assetName != null">
+                assetName = #{assetName},
+            </if>
+            <if test="product != null and product != ''">
+                product = #{product},
+            </if>
+            <if test="apiName != null">
+                apiName = #{apiName},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+</mapper>

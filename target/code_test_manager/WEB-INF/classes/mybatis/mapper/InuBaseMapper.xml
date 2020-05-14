@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.InuBaseMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.InuBase">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="insuranceType"  property="insuranceType" />
+        <result column="insuranceName"  property="insuranceName" />
+        <result column="effectiveDate"  property="effectiveDate" />
+        <result column="insurancePro"  property="insurancePro" />
+        <result column="sname"  property="sname" />
+        <result column="detailClause"  property="detailClause" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, insuranceType, insuranceName, effectiveDate, insurancePro, sname, detailClause
+    </sql>
+
+    <select id="selInuBaseById"  parameterType="int" resultType="com.chainfuture.code.bean.InuBase">
+          SELECT
+        <include refid="Base_Column_List" />
+        FROM   code_inu_base  WHERE id=#{id}
+    </select>
+    <select id="selInuBaseByType"  parameterType="int" resultType="com.chainfuture.code.bean.InuBase">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM   code_inu_base  WHERE insuranceType=#{insuranceType}
+    </select>
+</mapper>

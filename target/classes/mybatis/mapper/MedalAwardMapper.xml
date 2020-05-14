@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.MedalAwardMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.MedalAward">
+        <id column="id" property="id" />
+        <result column="medalName" property="medalName" />
+        <result column="prefit" property="prefit" />
+        <result column="type" property="type" />
+        <result column="status" property="status" />
+        <result column="assetName" property="assetName" />
+        <result column="product" property="product" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, medalName, prefit, `type`, `status`, assetName, product
+    </sql>
+
+    <select id="getMedalAwardList" parameterType="com.chainfuture.code.bean.MedalAward" resultType="com.chainfuture.code.bean.MedalAward">
+        SELECT
+        id, medalName, prefit, `type`, `status`, assetName, product
+        FROM code_medal_award    where assetName='DEMO'
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+
+    <select id="getCount" parameterType="com.chainfuture.code.bean.MedalAward" resultType="int">
+        SELECT count(id) FROM code_medal_award  WHERE assetName='DEMO'
+    </select>
+
+
+
+    <insert id="insertMedalAward" parameterType="com.chainfuture.code.bean.MedalAward">
+        INSERT INTO
+        code_medal_award (medalName, prefit, `type`, `status`, assetName, product)
+        VALUES
+        (#{medalName}, #{prefit}, #{type}, #{status},#{assetName}, #{product} )
+    </insert>
+
+    <!-- 修改勋章信息 -->
+    <update id="updateMedalAward" parameterType="com.chainfuture.code.bean.MedalAward">
+        UPDATE code_medal_award
+        <trim prefix="set" suffixOverrides=",">
+            <if test="medalName != null and medalName != ''">
+                medalIcon = #{medalIcon},
+            </if>
+            <if test="prefit != null">
+                medalName = #{medalName},
+            </if>
+            <if test="status != null and status != ''">
+                `status` = #{status},
+            </if>
+            <if test="type != null and type != ''">
+                createTime = #{createTime},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        delete from code_medal_award where id=#{id}
+    </delete>
+</mapper>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.WorkapiRecordMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.WorkapiRecord">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="appId"  property="appId" />
+        <result column="recordTime"  property="recordTime" />
+        <result column="year"  property="year" />
+        <result column="payNum"  property="payNum" />
+        <result column="way"  property="way" />
+        <result column="type"  property="type" />
+        <result column="amount"  property="amount" />
+        <result column="signMsg"  property="signMsg" />
+        <result column="receiver"  property="receiver" />
+        <result column="receiveTime"  property="receiveTime" />
+        <result column="busiJson"  property="busiJson" />
+        <result column="purchaser"  property="purchaser" />
+        <result column="status"  property="status" />
+        <result column="incomeStatus"  property="incomeStatus" />
+        <result column="profitAmount"  property="profitAmount" />
+        <result column="startTime"  property="startTime" />
+        <result column="endTime"  property="endTime" />
+        <result column="orderNum"  property="orderNum" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, appId, recordTime, `year`, payNum, way, `type`, amount, signMsg, receiver, receiveTime, busiJson,purchaser,status,incomeStatus,orderNum
+    </sql>
+    <select id="selWorkapiRecordByOrderNum" resultType="com.chainfuture.code.bean.WorkapiRecord" parameterType="java.lang.String">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM  code_workapi_record
+        WHERE orderNum=#{orderNum} AND status=1
+    </select>
+    <select id="selMaxProfitSection" resultType="com.chainfuture.code.bean.WorkapiRecord" parameterType="java.util.HashMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM  code_workapi_record
+        WHERE receiver = #{purchaser}  and  receiver is not null  and   purchaser = #{purchaser}  and  status = 1
+        <if test="startTime != null and startTime !='' ">
+            <![CDATA[
+				and	DATE_FORMAT(recordTime, '%Y-%m-%d %H:%i:%s')>= DATE_FORMAT(#{extensionTime}, '%Y-%m-%d %H:%i:%s')
+			]]>
+        </if>
+        <if test="endTime != null and endTime !='' ">
+            <![CDATA[
+				and	DATE_FORMAT(date_add(recordTime, interval `year` year), '%Y-%m-%d %H:%i:%s')< DATE_FORMAT(#{extensionTime}, '%Y-%m-%d %H:%i:%s')
+			]]>
+        </if>
+    </select>
+    <select id="selExtensionList" resultType="com.chainfuture.code.bean.WorkapiRecord" parameterType="java.util.HashMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM  code_workapi_record
+        WHERE receiver <![CDATA[!= ]]>#{purchaser}  and  receiver is not null  and   purchaser = #{purchaser}  and  status = 1
+    </select>
+
+    <select id="selWRSection" parameterType="java.util.HashMap" resultType="com.chainfuture.code.bean.WorkapiRecord">
+        select  <include refid="Base_Column_List"/>
+        from  code_workapi_record  where  status = 1
+        <if test="startTime != null and startTime !='' ">
+            <![CDATA[
+				and	DATE_FORMAT(recordTime, '%Y-%m-%d %H:%i:%s')>= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')
+			]]>
+        </if>
+        <if test="endTime != null and endTime !='' ">
+            <![CDATA[
+				and	DATE_FORMAT(recordTime, '%Y-%m-%d %H:%i:%s')< DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')
+			]]>
+        </if>
+        <if test="year !=null">
+            and `year`&gt;#{year}
+        </if>
+    </select>
+    <select id="getYearSection" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.WorkapiRecord">
+        select   <include refid="Base_Column_List"/>
+        from code_workapi_record   where  receiver = #{receiver}  order  by  recordTime
+    </select>
+
+    <select id="selWorkapiRecordSectionMax"   resultType="com.chainfuture.code.bean.WorkapiRecord" parameterType="java.lang.String">
+        select  id,`year`,amount ,  receiver, recordTime as receiveTime, busiJson,purchaser,status,incomeStatus,v
+        from  code_workapi_record  where  receiver  = #{receiver}  and  status = 1
+        <if test="startTime != null and startTime !='' ">
+        <![CDATA[
+				and	DATE_FORMAT(recordTime, '%Y-%m-%d %H:%i:%s')>= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')
+			]]>
+        </if>
+        <if test="endTime != null and endTime !='' ">
+        <![CDATA[
+				and	DATE_FORMAT(recordTime, '%Y-%m-%d %H:%i:%s')< DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')
+			]]>
+        </if>
+        order  by  `year` desc ,amount  desc
+    </select>
+
+    <select id="getExtensionRecordSection" resultType="com.chainfuture.code.bean.WorkapiRecord" parameterType="java.util.HashMap">
+        select   id, appId, recordTime, `year`, payNum, way, `type`, amount, signMsg, receiver, receiveTime, busiJson,purchaser,status,incomeStatus,(`year`*#{profitAmount})  as profitAmount,orderNum
+        from  code_workapi_record   where   receiver <![CDATA[!= ]]>#{purchaser}  and  receiver is not null  and   purchaser = #{purchaser}  and  status = 1
+        <if test="startTime != null and startTime !='' ">
+--             and STR_TO_DATE(p.createtime,'%d-%m-%Y %H:%i:%s') &gt; STR_TO_DATE(#{start},'%d-%m-%Y %H:%i:%s')
+      <![CDATA[
+            and	DATE_FORMAT(recordTime, '%Y-%m-%d %H:%i:%s')>= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')
+        ]]>
+        </if>
+        <if test="endTime != null and endTime !='' ">
+    <![CDATA[
+            and	DATE_FORMAT(recordTime, '%Y-%m-%d %H:%i:%s')< DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')
+        ]]>
+        </if>
+      order by  recordTime  desc
+    </select>
+
+    <select id="selProfitSection" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select   count(id) profitCount,sum(`year`*#{profitAmount})  profitSum
+        from  code_workapi_record   where   receiver!=purchaser  and  receiver is not null  and   purchaser = #{purchaser}  and  status = 1
+        <if test="startTime != null and startTime !='' ">
+         <![CDATA[
+				and	DATE_FORMAT(recordTime, '%Y-%m-%d %H:%i:%s')>= DATE_FORMAT(#{startTime}, '%Y-%m-%d %H:%i:%s')
+			]]>
+        </if>
+        <if test="endTime != null and endTime !='' ">
+        <![CDATA[
+				and	DATE_FORMAT(recordTime, '%Y-%m-%d %H:%i:%s')< DATE_FORMAT(#{endTime}, '%Y-%m-%d %H:%i:%s')
+			]]>
+        </if>
+    </select>
+
+
+
+    <select id="selFiledComment" resultType="java.util.HashMap" >
+        Select COLUMN_NAME ,  COLUMN_COMMENT
+        from INFORMATION_SCHEMA.COLUMNS
+        Where table_name = 'code_workapi_record'  and    length(COLUMN_COMMENT)>0
+    </select>
+
+    <select id="getById" resultType="com.chainfuture.code.bean.WorkapiRecord" parameterType="int">
+        select    id,  recordTime, `year`, payNum, way, `type`, amount, signMsg, receiver, receiveTime, busiJson,purchaser,status,incomeStatus,orderNum
+        from code_workapi_record   where  id = #{id}
+    </select>
+
+    <select id="selProfit" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+         select   count(id) profitCount,sum(`year`*#{profitAmount})  profitSum
+        from  code_workapi_record   where   receiver!=purchaser  and  receiver is not null  and   purchaser = #{purchaser}
+    </select>
+
+    <select id="selWorkapiRecordByTimeAndAddr"  resultType="com.chainfuture.code.bean.WorkapiRecord">
+        select id,`year`,amount , recordTime, receiver, receiveTime, busiJson,purchaser,status,incomeStatus,orderNum
+         from  code_workapi_record  where   purchaser = #{purchaser}  and  recordTime = #{recordTime}  order  by  recordTime  desc
+    </select>
+
+    <select id="selWorkapiRecordMax"   resultType="com.chainfuture.code.bean.WorkapiRecord" parameterType="java.lang.String">
+        select  id,`year`,amount ,  receiver, receiveTime, busiJson,purchaser,status,incomeStatus,orderNum
+        from  code_workapi_record  where  receiver  = #{receiver}  order  by  `year` desc ,amount  desc
+    </select>
+
+    <select id="getExtensionRecord" resultType="com.chainfuture.code.bean.WorkapiRecord" parameterType="java.util.HashMap">
+        select   id, appId, recordTime, `year`, payNum, way, `type`, amount, signMsg, receiver, receiveTime, busiJson,purchaser,status,incomeStatus,(`year`*#{profitAmount})  as profitAmount
+        from  code_workapi_record   where   receiver!=purchaser  and  receiver is not null  and   purchaser = #{purchaser}  order by recordTime desc
+    </select>
+
+    <select id="getPurchaseRecord" resultType="java.util.HashMap" parameterType="java.lang.String">
+        select    cwr.id,  cwr.recordTime, cwr.year, cwr.payNum, cwr.way, cwr.amount, cwr.signMsg, cwr.receiver, cwr.receiveTime, cwr.busiJson,cwr.purchaser,cwr.status,cwr.incomeStatus, cib.insuranceName as `type`
+        from code_workapi_record cwr  left join  code_inu_base  cib    on  cwr.type = cib.insuranceType
+          where   cwr.purchaser = #{purchaser} and cwr.status!=0  order  by  cwr.recordTime desc
+    </select>
+
+    <select id="selWorkapiRecordById" resultType="com.chainfuture.code.bean.WorkapiRecord" parameterType="int">
+         select    id,  recordTime, `year`, payNum, way, `type`, amount, signMsg, receiver, receiveTime, busiJson,purchaser,status,incomeStatus
+        from code_workapi_record   where  id = #{id}    order  by  recordTime desc
+    </select>
+
+    <select id="getEffectiveInsurance" parameterType="java.lang.String" resultType="com.chainfuture.code.bean.WorkapiRecord">
+        select    id,  recordTime, `year`, payNum, way, `type`, amount, signMsg, receiver, receiveTime, busiJson,purchaser,status,incomeStatus
+        from code_workapi_record   where   receiver = #{receiver}    order  by  recordTime desc
+    </select>
+
+    <select id="getUnopenedInsurance" parameterType="java.lang.String" resultType="java.util.HashMap">
+        select cwr.id,cwr.recordTime,cwr.year,cwr.payNum,cib.insuranceName,cib.effectiveDate,cib.insuranceName  as `type`
+        from  code_workapi_record  cwr  left join  code_inu_base   cib   on  cwr.type = cib.insuranceType
+        where  cwr.status = 1  and  cwr.purchaser = #{purchaser} and cwr.receiver is null   order  by  recordTime desc
+    </select>
+
+    <insert id="addWorkapiRecord" parameterType="com.chainfuture.code.bean.WorkapiRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT  INTO code_workapi_record (appId,recordTime,`year`,payNum, way,`type`,amount, signMsg, receiver, receiveTime,busiJson,purchaser,status,incomeStatus,orderNum)
+        VALUES (#{appId},#{recordTime},#{year},#{payNum},#{way},#{type},#{amount},#{signMsg},#{receiver},#{receiveTime},#{busiJson},#{purchaser},#{status},#{incomeStatus},#{orderNum})
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+    </insert>
+
+    <update id="updateById" parameterType="com.chainfuture.code.bean.WorkapiRecord" >
+        update code_workapi_record
+        <trim prefix="set" suffixOverrides=",">
+            <if test="appId != null" >
+                appId = #{appId},
+            </if>
+            <if test="recordTime != null" >
+                recordTime = #{recordTime},
+            </if>
+            <if test="year != null" >
+                `year` = #{year},
+            </if>
+            <if test="payNum != null" >
+                payNum = #{payNum},
+            </if>
+            <if test="way != null" >
+                way = #{way},
+            </if>
+            <if test="type != null" >
+                `type` = #{type},
+            </if>
+            <if test="amount != null" >
+                amount = #{amount},
+            </if>
+            <if test="signMsg != null" >
+                signMsg = #{signMsg},
+            </if>
+            <if test="receiver != null" >
+                receiver = #{receiver},
+            </if>
+            <if test="receiveTime != null" >
+                receiveTime = #{receiveTime},
+            </if>
+            <if test="busiJson != null" >
+                busiJson = #{busiJson},
+            </if>
+            <if test="purchaser != null" >
+                purchaser = #{purchaser},
+            </if>
+            <if test="status != null" >
+                status = #{status},
+            </if>
+            <if test="incomeStatus != null" >
+                incomeStatus = #{incomeStatus},
+            </if>
+            <if test="orderNum != null" >
+                orderNum = #{orderNum},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updateforPayNum" parameterType="com.chainfuture.code.bean.WorkapiRecord" >
+        update code_workapi_record
+        <trim prefix="set" suffixOverrides=",">
+            <if test="payNum != null" >
+                payNum = #{payNum},
+            </if>
+            <if test="status != null" >
+                status = #{status},
+            </if>
+        </trim>
+        where  purchaser = #{purchaser}  and  recordTime = #{recordTime}
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() as id
+        </selectKey>
+    </update>
+</mapper>

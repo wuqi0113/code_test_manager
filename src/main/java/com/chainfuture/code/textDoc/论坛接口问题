@@ -1,0 +1,12 @@
+一、涉及拨款的都存在一个地址【】和积分类型，接口如下
+            url         http://39.100.122.95:8080/code_test_manager/backapi/admin/getHomePage     GET
+    		params      无
+    		return      {"code":0,"primeAddr":"总账户地址",data":{"id":5,"assetId":999999,"assetName":DEMO,headImg":"应用图","companyIntroduce":"公司主体","website":"www.sphbl.com","email":"sphongbaolai@163.com","companyPublic":"宣传图","contactInfo":"营业执照"},"success":true}
+二、账户地址问题
+    我会增加一个接口
+三、有关论坛内部权限以及其他的管理问题，不能跨系统操作，所以不需要我提供接口。
+四、拨款问题
+    分体系内和体系外，以用户在体系内是否有角色权限为分界。
+    除了论坛总账户地址和用户地址外，其他拨款，在执行操作的时候要进行一个判断。判断时候有角色，有角色的用户可以进行选择，选择从当前账户池拨款还是从外部用户扫码支付；
+    普通用户强制进行外部拨款，不能弹出选择框，直接弹出支付二维码。
+    该接口我们及时沟通及时调整，若无问题我将按照说明进行接口调整。

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.MajorLogMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.MajorLog">
+        <id column="id" property="id" />
+        <result column="member"  property="member" />
+        <result column="operatime"  property="operatime" />
+        <result column="operation"  property="operation" />
+        <result column="method"  property="method" />
+        <result column="remoteAddr"  property="remoteAddr" />
+        <result column="nodeAddress"  property="nodeAddress" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, member, operatime, operation,method, remoteAddr, nodeAddress
+    </sql>
+    <select id="getById" parameterType="java.lang.Integer" resultType="com.chainfuture.code.bean.MajorLog">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM code_majorlog  WHERE   id= #{id}
+    </select>
+    <!-- 查询所有勋章记录 -->
+    <select id="listMajorLog" resultType="com.chainfuture.code.bean.MajorLog">
+        SELECT
+        id, member, operatime, operation,method, remoteAddr, nodeAddress
+        FROM code_majorlog
+        <if test="pageIndex != null and limit != null">
+            limit ${pageIndex},${limit}
+        </if>
+    </select>
+    <!-- 查询记录数 -->
+    <select id="queryCount" parameterType="com.chainfuture.code.bean.MajorLog" resultType="int">
+        SELECT count(id) FROM code_majorlog
+    </select>
+
+    <!-- 插入一条勋章记录 -->
+    <insert id="insertMajorLog" parameterType="com.chainfuture.code.bean.MajorLog">
+        INSERT INTO
+        code_majorlog (member,operatime, operation, method, remoteAddr ,nodeAddress)
+        VALUES
+        (#{member}, #{operatime}, #{operation},#{method}, #{remoteAddr}, #{nodeAddress})
+    </insert>
+</mapper>

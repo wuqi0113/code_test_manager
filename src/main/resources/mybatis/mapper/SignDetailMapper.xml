@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chainfuture.code.mapper.SignDetailMapper">
+    <resultMap id="BaseResultMap" type="com.chainfuture.code.bean.SignDetail">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result property="signId" column="signId"/>
+        <result property="effectTime" column="effectTime"/>
+        <result property="uneffectTime" column="uneffectTime"/>
+        <result property="proAddress" column="proAddress"/>
+        <result property="receiveAddress" column="receiveAddress"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, signId, effectTime, uneffectTime, proAddress, receiveAddress, status
+    </sql>
+    <select id="selProductCode" resultType="com.chainfuture.code.bean.SignDetail" parameterType="java.lang.Integer">
+        SELECT <include refid="Base_Column_List"/>
+        FROM  code_sign_detail
+        WHERE  1=1
+        <if test="_parameter!=null">
+            AND  status=#{status}
+        </if>
+    </select>
+    <!-- 插入一条记录 -->
+    <insert id="insertProductCode" parameterType="com.chainfuture.code.bean.SignDetail">
+        INSERT INTO
+        code_sign_detail (signId, effectTime, uneffectTime, proAddress, receiveAddress, status)
+        VALUES
+        (#{signId},#{effectTime},#{uneffectTime},#{proAddress},#{receiveAddress},#{status})
+    </insert>
+    <!-- 修改信息 -->
+    <update id="updateProductCode" parameterType="com.chainfuture.code.bean.SignDetail">
+        UPDATE code_sign_detail
+        <trim prefix="set" suffixOverrides=",">
+            <if test="productName != null ">
+                productName=#{productName},
+            </if>
+            <if test="signId != null">
+                signId=#{signId},
+            </if>
+            <if test="effectTime != null">
+                effectTime=#{effectTime},
+            </if>
+            <if test="uneffectTime != null">
+                uneffectTime=#{uneffectTime},
+            </if>
+            <if test="proAddress != null">
+                proAddress=#{proAddress},
+            </if>
+            <if test="receiveAddress != null">
+                receiveAddress=#{receiveAddress},
+            </if>
+            <if test="status !=null">
+                status=#{status},
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
+    <delete id="delProductCode" parameterType="java.lang.Long">
+        DELETE FROM code_sign_detail
+        WHERE  id=#{id}
+    </delete>
+</mapper>
